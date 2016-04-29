@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:dct="http://purl.org/dc/terms/"
+   xmlns:owl="http://www.w3.org/2002/07/owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:skos="http://www.w3c.org/2008/skos/"
+>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/selectRequired">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSelector"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <dc:description xml:lang="en">
+True if it is required to select an element on agreement of the policy.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/expires">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <dc:description xml:lang="en">
+Optional expiry date of the policy.
+The policy is not considered valid after this date.
+</dc:description>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/IRI">
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/id_types"/>
+    <skos:name xml:lang="en">IRI</skos:name>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <dc:description xml:lang="en">Id which has the form of an IRI</dc:description>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/top_id_type"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/defaultAssignee">
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dc:description xml:lang="en">
+                                 Implicit default assignee of a rule.
+                                 </dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/anyEdgeDirection">
+    <skos:name xml:lang="en">anyEdgeDirection</skos:name>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirections"/>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/samplePolicy">
+    <dc:description xml:lang="en">
+The way asset are selected. Default is selected_by_assignee.
+</dc:description>
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSelector"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL456C9">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/edgeDirection"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/value">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Id"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Asset">
+    <rdf:type rdf:nodeID="ub1bL63C9"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Asset</rdfs:label>
+    <rdf:type rdf:nodeID="ub1bL60C12"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/odrl/2/Asset"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <dc:description xml:lang="en">
+An asset in ODRL is any object referred by a policy.
+
+Here the asset generally represents the intellectual work.
+Only metadata about the Asset that is required for the licensing of the Asset should be defined here.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/topIdType">
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/id_types"/>
+    <skos:name xml:lang="en">topIdType</skos:name>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/IdType">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">IdType</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <dc:description xml:lang="en">
+Represents a class of identifiers
+</dc:description>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Party">
+    <rdfs:subClassOf rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:nodeID="ub1bL178C9"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:nodeID="ub1bL175C12"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Party</rdfs:label>
+    <dc:description xml:lang="en">
+A party represent:
+  1. a legal person having duties and rights as part of agreements.
+  2. a person known by an organisation (not necessarily providing its real name)
+
+</dc:description>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/odrl/2/Party"/>
+    <rdf:type rdf:nodeID="ub1bL181C9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/targetObject">
+    <dc:description xml:lang="en">
+Indicates the entity that the elements must connect to through the predicate in order to be part of the set.
+Default is the AssetSet instance itself.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL271C9">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/digitalPolicyAuthor"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Id">
+    <rdf:type rdf:nodeID="ub1bL114C9"/>
+    <dc:description xml:lang="en">
+Identifier for an asset.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Id</rdfs:label>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:nodeID="ub1bL117C9"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL274C9">
+    <owl:onProperty rdf:resource="http://www.w3.org/ns/odrl/2/assigner"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/selectedByAssignee">
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anySamplePolicy"/>
+    <skos:name xml:lang="en">selectedByAssignee</skos:name>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies"/>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <dc:description xml:lang="en">chosen by the assignee party</dc:description>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/chosenSequentially">
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <skos:name xml:lang="en">chosenSequentially</skos:name>
+    <dc:description xml:lang="en">chosen according to a predefined order</dc:description>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anySamplePolicy"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-02-22T10:56:00+00:00</dct:modified>
+    <dc:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">OpenLicensing Extension (ODRL2.1/ OpenLicensing Profile).</dc:description>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Digital Catapult Software Engineering Team</dc:creator>
+    <owl:versionIRI rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.1.0</owl:versionInfo>
+    <dct:rights rdf:datatype="http://www.w3.org/2001/XMLSchema#string">(C) Digital Catapult Limited 2016</dct:rights>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/policyDescription">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <dc:description xml:lang="en">A short description of the policy - usable to give a user rapidly information about the policy.</dc:description>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/description"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/provider">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <dc:description xml:lang="en">
+origanisation_id of the organisation representing the party.
+if no value is provider the party is the organisation itself
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL264C9">
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <owl:onProperty rdf:resource="http://www.w3.org/ns/odrl/2/target"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/predicate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <dc:description xml:lang="en">
+Indicates which predicate is used to Indicate that element belong to a set.
+</dc:description>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/fromSet">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSelector"/>
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <dc:description xml:lang="en">
+The set asset can be picked from.
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL254C13">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/policyDescription"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/pointingFrom">
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:name xml:lang="en">pointingFrom</skos:name>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirections"/>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anyEdgeDirection"/>
+    <dc:description xml:lang="en">Point from the element to the target_object</dc:description>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/hasElement">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL460C9">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/hasElement"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL452C15">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/targetObject"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL413C20">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/selectRequired"/>
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL420C9">
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/count"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/policyText">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+    <dc:description xml:lang="en">The policy 'small print'</dc:description>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Policy">
+    <rdf:type rdf:nodeID="ub1bL274C9"/>
+    <rdf:type rdf:nodeID="ub1bL268C9"/>
+    <rdf:type rdf:nodeID="ub1bL264C9"/>
+    <rdf:type rdf:nodeID="ub1bL257C9"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/odrl/2/Policy"/>
+    <rdf:type rdf:nodeID="ub1bL254C13"/>
+    <rdf:type rdf:nodeID="ub1bL260C9"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <dc:description xml:lang="en">
+An ODRL policy representing an agreement or a potential agreement.
+
+Policy is the central entity that holds an ODRL policy together. In its encoded form, e.g. in an XML document, it makes the policy addressable from the outside word via its uid attribute. Policy can refer to Permissions and Prohibitions.
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:nodeID="ub1bL271C9"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Policy</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL423C9">
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/fromSet"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL463C9">
+    <owl:allValuesFrom rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/predicate"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL260C9">
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.w3.org/ns/odrl/2/assignee"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL178C9">
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/provider"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/name">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/name"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/pointingTo">
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirections"/>
+    <skos:name xml:lang="en">pointingTo</skos:name>
+    <dc:description xml:lang="en">Point from the target_object to the element</dc:description>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection"/>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anyEdgeDirection"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/selectedByAssigner">
+    <dc:description xml:lang="en">chosen by the assigner party</dc:description>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anySamplePolicy"/>
+    <skos:name xml:lang="en">selectedByAssigner</skos:name>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <dc:description xml:lang="en">
+Indicates if the predicate used to connect the set to its elements,
+are "pointing to" the elements or "pointing from" the elements 
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openlicensing.org/ns/ol/1.1/"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSetEdgeDirection</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Hubkey">
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/top_id_type"/>
+    <dc:description xml:lang="en">Id who has the form of a Hubkey.  This refers to the latest schema of a Hubkey.</dc:description>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+    <skos:name xml:lang="en">Hubkey</skos:name>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/id_types"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/edgeDirection">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dc:description xml:lang="en">
+Indicates in which direction the predicate is used to connect elements to the set target_object.
+Default is op:pointingTo.
+</dc:description>
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirection"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/anySamplePolicy">
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies"/>
+    <skos:name xml:lang="en">anySamplePolicy</skos:name>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/alsoIdentifiedBy">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dc:description xml:lang="en">
+    An Asset may have different identifiers assigned to it by different parties.
+    The identities are not necessarily equivalent even though they have been assigned to the same Asset.
+    Each identity has a type, such as ISBN or EIDR and the type is semantically defined.
+    Identities that alsoIdentifiedBy refer to MUST be for the whole Asset and not for part of the Asset.
+    	For example if the Asset is a book, the alsoIdentifiedBy ids will be for the book and NOT for pictures in the book.
+</dc:description>
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/Id"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL114C9">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/value"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/count">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSelector"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <dc:description xml:lang="en">
+Default value is 1.
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSelector">
+    <rdf:type rdf:nodeID="ub1bL416C9"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSelector</rdfs:label>
+    <rdf:type rdf:nodeID="ub1bL413C20"/>
+    <rdfs:subClassOf rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <rdf:type rdf:nodeID="ub1bL423C9"/>
+    <rdfs:isDefinedBy rdf:resource="http://openlicensing.org/ns/ol/1.1/"/>
+    <rdf:type rdf:nodeID="ub1bL420C9"/>
+    <dc:description xml:lang="en">
+An asset that is actually sampled from a set. An AssetSetSample must indicate the set asset must be selected from, m
+ay contain a sample policy,  and may contain the number of assets that should be sampled.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/reference">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <dc:description xml:lang="en">
+An reference id used by the provider to actually identify the party
+</dc:description>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/source"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Party"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL268C9">
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/expires"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL175C12">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/reference"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSetEdgeDirections">
+    <skos:hasTopConcept rdf:resource="http://openpermissions.org/ns/op/1.1/anyEdgeDirection"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/ConceptScheme"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/HubkeyS0">
+    <skos:name xml:lang="en">HubkeyS0</skos:name>
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/id_types"/>
+    <dc:description xml:lang="en">Id who has the form of a Hubkey.  This refers to schema 0 of the Hubkey.</dc:description>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/top_id_type"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/digitalPolicyAuthor">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <dc:description xml:lang="en">
+A field to allow the author of the digital policy - if available this person may be
+eventually be contacted to obtain information about the policy.
+</dc:description>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/id_type">
+    <rdfs:range rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Id"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/title">
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+    <dc:description xml:lang="en">
+Title of the asset for the purpose of presentation to a Licensee.
+</dc:description>
+    <rdfs:subPropertyOf rdf:resource="http://purl.org/dc/elements/1.1/title"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/randomlyChosen">
+    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <skos:narrowerThan rdf:resource="http://openpermissions.org/ns/op/1.1/anySamplePolicy"/>
+    <skos:name xml:lang="en">randomlyChosen</skos:name>
+    <dc:description xml:lang="en">chosen in an arbitrary manner not controller by assignee or assigner</dc:description>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/Concept"/>
+    <skos:inScheme rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSet">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSet</rdfs:label>
+    <rdf:type rdf:nodeID="ub1bL460C9"/>
+    <rdf:type rdf:nodeID="ub1bL452C15"/>
+    <rdfs:subClassOf rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSet"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:nodeID="ub1bL456C9"/>
+    <rdfs:subClassOf rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
+    <rdf:type rdf:nodeID="ub1bL463C9"/>
+    <dc:description xml:lang="en">
+A set defined as the set of element pointing to a target object via a certain predicate.
+</dc:description>
+    <rdfs:isDefinedBy rdf:resource="http://openlicensing.org/ns/ol/1.1/"/>
+    <dc:description xml:lang="en">
+A set or collection of elements of type elementType
+</dc:description>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL60C12">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/title"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL63C9">
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/Id"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/alsoIdentifiedBy"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL257C9">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://www.w3.org/ns/odrl/2/duty"/>
+    <owl:allValuesFrom rdf:resource="http://www.w3.org/ns/odrl/2/Duty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/sharedDuties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/odrl/2/Duty"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
+    <rdfs:domain rdf:resource="http://openpermissions.org/ns/op/1.1/Policy"/>
+    <dc:description xml:lang="en">
+                                 Duties that are shared by all Permissions in this policy.
+                                 </dc:description>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL416C9">
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/samplePolicy"/>
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy"/>
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicies">
+    <skos:hasTopConcept rdf:resource="http://openpermissions.org/ns/op/1.1/anySamplePolicy"/>
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/ConceptScheme"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL117C9">
+    <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:cardinality>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:allValuesFrom rdf:resource="http://openpermissions.org/ns/op/1.1/IdType"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/id_type"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="ub1bL181C9">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <owl:onProperty rdf:resource="http://openpermissions.org/ns/op/1.1/name"/>
+    <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</owl:maxCardinality>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/id_types">
+    <rdf:type rdf:resource="http://www.w3c.org/2008/skos/ConceptScheme"/>
+    <skos:hasTopConcept rdf:resource="http://openpermissions.org/ns/op/1.1/topIdType"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSetSamplePolicy</rdfs:label>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:isDefinedBy rdf:resource="http://openlicensing.org/ns/ol/1.1/"/>
+    <dc:description xml:lang="en">
+Indicates the way sampling from a set is done. 
+</dc:description>
+  </rdf:Description>
+</rdf:RDF>

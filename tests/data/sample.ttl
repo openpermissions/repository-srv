@@ -1,0 +1,14 @@
+@prefix ns0: <http://openpermissions.org/ns/opex/0.1/> .
+@prefix ns1: <http://openpermissions.org/ns/op/1.0/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://copyrighthub.org/s0/hub1/asset/exampleco/examplecopictureid/10000010>
+  a <http://openpermissions.org/ns/op/1.0/Asset> ;
+  ns0:suppliedBy <http://copyrighthub.org/s0/hub1/party/exampleco/examplecosupplierid/EXAMPLE-CO-PICTURE-LIBRARY> ;
+  ns0:distributedBy <https://copyrighthub.org/s0/hub1/party/chub/pid/exampleco> ;
+  ns1:alsoIdentifiedBy [
+    ns1:value "10000010"^^xsd:string ;
+    a ns1:Id ;
+    ns1:id_type "examplecopictureid"^^xsd:string
+  ] ;
+  ns0:explicitOffer <https://www.copyrighthub.org/s0/hub1/offer/chub/exampleco-offerid/01> .
