@@ -27,23 +27,23 @@ from .util import create_mockdb
 
 ASSET_TEMPLATE = """
 _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Id> .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/distributedBy> <https://copyrighthub.org/s0/hub1/party/pid/4corners> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/distributedBy> <https://openpermissions.org/s0/hub1/party/pid/4corners> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://openpermissions.org/ns/op/1.0/value> "e48e2bb8-bda5-424e-885d-c2ffec1fe887" .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/description> "Deer" .
-<https://copyrighthub.org/s0/hub1/party/rightsourceid/RightSource1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
+<https://openpermissions.org/s0/hub1/party/rightsourceid/RightSource1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
 _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://openpermissions.org/ns/op/1.0/value> "23" .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/alsoIdentifiedBy> _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 .
-<https://copyrighthub.org/s0/hub1/right/bapla/hk/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://copyrighthub.org/s0/hub1/right/bapla/hk/11> .
+<https://openpermissions.org/s0/hub1/right/bapla/hk/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://openpermissions.org/s0/hub1/right/bapla/hk/11> .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/alsoIdentifiedBy> _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/suppliedBy> <https://copyrighthub.org/s0/hub1/party/rightsourceid/RightSource1> .
-<https://copyrighthub.org/s0/hub1/right/bapla/hk/11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/suppliedBy> <https://openpermissions.org/s0/hub1/party/rightsourceid/RightSource1> .
+<https://openpermissions.org/s0/hub1/right/bapla/hk/11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
 _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://openpermissions.org/ns/op/1.0/id_type> "4cornerspictureid" .
-<https://copyrighthub.org/s0/hub1/party/pid/4corners> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
+<https://openpermissions.org/s0/hub1/party/pid/4corners> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
 <{hub_key}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Asset> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Id> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://openpermissions.org/ns/op/1.0/id_type> "picscoutpictureid" .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://copyrighthub.org/s0/hub1/right/bapla/hk/12> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://openpermissions.org/s0/hub1/right/bapla/hk/12> .
 """
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '../..', 'data')
@@ -56,7 +56,7 @@ def get_valid_xml():
 
 
 def test_foo():
-    hub_key = 'https://copyrighthub.org/s0/hub1/asset/4corners/4cornerspictureid/{}'.format(uuid.uuid4())
+    hub_key = 'https://openpermissions.org/s0/hub1/asset/4corners/4cornerspictureid/{}'.format(uuid.uuid4())
     doc = ASSET_TEMPLATE.format(hub_key=hub_key)
     results = asset.get_asset_ids(doc, 'text/rdf+n3')
     expected = [

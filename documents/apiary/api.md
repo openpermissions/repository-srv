@@ -1635,7 +1635,7 @@ If no assets are found, an empty array is returned.
                         "repository": {
                             "name": "testco repo",
                             "service": {
-                                "organisation_id": "hogwarts",
+                                "organisation_id": "toppco",
                                 "name": "repository0",
                                 "created_by": "admin",
                                 "state": "approved",
