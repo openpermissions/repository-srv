@@ -12,7 +12,7 @@ import logging
 from koi.configure import log_formatter
 from tornado.options import options
 
-AUDIT_LOG = 'copyrighthub.audit'
+AUDIT_LOG = 'opp.audit'
 logger = logging.getLogger(AUDIT_LOG)
 
 
