@@ -144,22 +144,22 @@ Capabilities/limitations of the service
             <?xml version="1.0" encoding="UTF-8"?>
             <rdf:RDF
                xmlns:odrl="http://www.w3.org/ns/odrl/2/"
-               xmlns:op="http://openlicensing.org/ns/op/1.1/"
-               xmlns:opex="http://openlicensing.org/ns/opex/1.0/"
+               xmlns:op="http://openpermissions.org/ns/op/1.1/"
+               xmlns:opex="http://openpermissions.org/ns/opex/1.0/"
                xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
                xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
             >
-                <rdf:Description rdf:about="http://openlicensing.org/ns/id/10000010">
-                    <rdf:type rdf:resource="http://openlicensing.org/ns/op/1.1/Asset"/>
+                <rdf:Description rdf:about="http://openpermissions.org/ns/id/10000010">
+                    <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
                     <op:alsoIdentifiedBy>
                         <rdf:Description>
                             <op:value rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10000010</op:value>
-                            <rdf:type rdf:resource="http://openlicensing.org/ns/op/1.1/Id"/>
-                            <op:idtype rdf:resource="http://openlicensing.org/ns/hubid/examplecopictureid"/>
+                            <rdf:type rdf:resource="http://openpermissions.org/ns/op/1.1/Id"/>
+                            <op:idtype rdf:resource="http://openpermissions.org/ns/hubid/examplecopictureid"/>
                         </rdf:Description>
                     </op:alsoIdentifiedBy>
-                    <opex:explicitOffer rdf:resource="http://openlicensing.org/ns/id/0ffe301"/>
-                    <opex:explicitOffer rdf:resource="http://openlicensing.org/ns/id/0ffe302"/>
+                    <opex:explicitOffer rdf:resource="http://openpermissions.org/ns/id/0ffe301"/>
+                    <opex:explicitOffer rdf:resource="http://openpermissions.org/ns/id/0ffe302"/>
                 </rdf:Description>
             </rdf:RDF>
 
@@ -308,7 +308,7 @@ Capabilities/limitations of the service
                             "type": "@id",
                             "@container": "@set"
                         },
-                        "hub": "http://openlicensing.org/ns/hub/",
+                        "hub": "http://openpermissions.org/ns/hub/",
                         "constraint": {
                             "type": "@id",
                             "@container": "@set"
@@ -316,7 +316,7 @@ Capabilities/limitations of the service
                         "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                         "@language": "en",
                         "dc": "http://purl.org/dc/elements/1.1/",
-                        "opex": "http://openlicensing.org/ns/opex/1.0/",
+                        "opex": "http://openpermissions.org/ns/opex/1.0/",
                         "op:alsoIdentifiedBy": {
                             "type": "@id",
                             "@container": "@set"
@@ -327,13 +327,13 @@ Capabilities/limitations of the service
                             "@container": "@set"
                         },
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
-                        "ol": "http://openlicensing.org/ns/op/1.1/",
+                        "ol": "http://openpermissions.org/ns/op/1.1/",
                         "permission": {
                             "type": "@id",
                             "@container": "@set"
                         },
                         "dct": "http://purl.org/dc/terms/",
-                        "id": "http://openlicensing.org/ns/id/"
+                        "id": "http://openpermissions.org/ns/id/"
                     },
                     "@id": "id:8245a4e810f441259f7fba6bdd9381d94e86",
                     "@type": [
@@ -440,19 +440,19 @@ even if the next page is empty.
                "status" : 200,
                "data" : [
                   {
-                     "entity_uri" : "http://openlicensing.org/ns/id/5be1aea2ae544c368f161b8f0d225077",
+                     "entity_uri" : "http://openpermissions.org/ns/id/5be1aea2ae544c368f161b8f0d225077",
                      "source_id" : "5be1aea2ae544c368f161b8f0d225077",
                      "last_modified" : "2016-03-08T10:54:38+00:00",
                      "source_id_type" : "testcopictureid"
                   },
                   {
-                     "entity_uri" : "http://openlicensing.org/ns/id/a94a56c2d2ef42c1a6196d72b68623a0",
+                     "entity_uri" : "http://openpermissions.org/ns/id/a94a56c2d2ef42c1a6196d72b68623a0",
                      "source_id_type" : "testcopictureid",
                      "source_id" : "a94a56c2d2ef42c1a6196d72b68623a0",
                      "last_modified" : "2016-03-08T10:54:40+00:00"
                   },
                   {
-                     "entity_uri" : "http://openlicensing.org/ns/id/698f1ea3c6a04dfb9c196c8911eda48e",
+                     "entity_uri" : "http://openpermissions.org/ns/id/698f1ea3c6a04dfb9c196c8911eda48e",
                      "source_id" : "698f1ea3c6a04dfb9c196c8911eda48e",
                      "last_modified" : "2016-03-08T10:54:42+00:00",
                      "source_id_type" : "testcopictureid"
@@ -461,13 +461,13 @@ even if the next page is empty.
                      "source_id_type" : "testcopictureid",
                      "source_id" : "4fff68a9d66446e6a2d32211f99ed5c3",
                      "last_modified" : "2016-03-08T15:13:32+00:00",
-                     "entity_uri" : "http://openlicensing.org/ns/id/4fff68a9d66446e6a2d32211f99ed5c3"
+                     "entity_uri" : "http://openpermissions.org/ns/id/4fff68a9d66446e6a2d32211f99ed5c3"
                   },
                   {
                      "last_modified" : "2016-03-08T15:13:34+00:00",
                      "source_id" : "a9ed4e8f84a040c4a664354760169a4d",
                      "source_id_type" : "testcopictureid",
-                     "entity_uri" : "http://openlicensing.org/ns/id/a9ed4e8f84a040c4a664354760169a4d"
+                     "entity_uri" : "http://openpermissions.org/ns/id/a9ed4e8f84a040c4a664354760169a4d"
                   }
                ],
                "metadata" : {
@@ -735,7 +735,7 @@ If no assets are found, an empty array is returned.
                                     },
                                     "owl": "http://www.w3.org/2002/07/owl#",
                                     "@vocab": "http://www.w3.org/ns/odrl/2/",
-                                    "hub": "http://openlicensing.org/ns/hub/",
+                                    "hub": "http://openpermissions.org/ns/hub/",
                                     "constraint": {
                                         "type": "@id",
                                         "@container": "@set"
@@ -743,7 +743,7 @@ If no assets are found, an empty array is returned.
                                     "dct": "http://purl.org/dc/terms/",
                                     "@language": "en",
                                     "dc": "http://purl.org/dc/elements/1.1/",
-                                    "opex": "http://openlicensing.org/ns/opex/1.0/",
+                                    "opex": "http://openpermissions.org/ns/opex/1.0/",
                                     "op:alsoIdentifiedBy": {
                                         "type": "@id",
                                         "@container": "@set"
@@ -755,8 +755,8 @@ If no assets are found, an empty array is returned.
                                         "@container": "@set"
                                     },
                                     "xsd": "http://www.w3.org/2001/XMLSchema#",
-                                    "ol": "http://openlicensing.org/ns/op/1.1/",
-                                    "id": "http://openlicensing.org/ns/id/",
+                                    "ol": "http://openpermissions.org/ns/op/1.1/",
+                                    "id": "http://openpermissions.org/ns/id/",
                                     "permission": {
                                         "type": "@id",
                                         "@container": "@set"
@@ -820,7 +820,7 @@ If no assets are found, an empty array is returned.
                                                 "@id": "id:8e6a4945c55346d2beedccbb326dca5a"
                                             }
                                         ],
-                                        "profile": "http://openlicensing.org/ns/op/1.1/",
+                                        "profile": "http://openpermissions.org/ns/op/1.1/",
                                         "target": {
                                             "@id": "id:749946384adf460982edafecc9c846c0"
                                         },
@@ -1133,10 +1133,10 @@ If no assets are found, an empty array is returned.
                   "@container": "@set",
                   "type": "@id"
                 },
-                "hub": "http://openlicensing.org/ns/hub/",
-                "id": "http://openlicensing.org/ns/id/",
+                "hub": "http://openpermissions.org/ns/hub/",
+                "id": "http://openpermissions.org/ns/id/",
                 "odrl": "http://www.w3.org/ns/odrl/2/",
-                "ol": "http://openlicensing.org/ns/op/1.1/",
+                "ol": "http://openpermissions.org/ns/op/1.1/",
                 "op:alsoIdentifiedBy": {
                   "@container": "@set",
                   "type": "@id"
@@ -1145,7 +1145,7 @@ If no assets are found, an empty array is returned.
                   "@container": "@set",
                   "type": "@id"
                 },
-                "opex": "http://openlicensing.org/ns/opex/1.0/",
+                "opex": "http://openpermissions.org/ns/opex/1.0/",
                 "owl": "http://www.w3.org/2002/07/owl#",
                 "permission": {
                   "@container": "@set",
@@ -1195,7 +1195,7 @@ If no assets are found, an empty array is returned.
                       "@id": "id:463325e5f3e24d6baffa0e2a813d15877852"
                     }
                   ],
-                  "profile": "http://openlicensing.org/ns/op/1.1/",
+                  "profile": "http://openpermissions.org/ns/op/1.1/",
                   "type": "offer",
                   "uid": "463325e5f3e24d6baffa0e2a813d1587",
                   "undefined": {
@@ -1442,7 +1442,7 @@ If no assets are found, an empty array is returned.
                             },
                             "owl": "http://www.w3.org/2002/07/owl#",
                             "@vocab": "http://www.w3.org/ns/odrl/2/",
-                            "hub": "http://openlicensing.org/ns/hub/",
+                            "hub": "http://openpermissions.org/ns/hub/",
                             "constraint": {
                                 "type": "@id",
                                 "@container": "@set"
@@ -1454,7 +1454,7 @@ If no assets are found, an empty array is returned.
                                 "@container": "@set"
                             },
                             "dc": "http://purl.org/dc/elements/1.1/",
-                            "opex": "http://openlicensing.org/ns/opex/1.0/",
+                            "opex": "http://openpermissions.org/ns/opex/1.0/",
                             "op:alsoIdentifiedBy": {
                                 "type": "@id",
                                 "@container": "@set"
@@ -1465,13 +1465,13 @@ If no assets are found, an empty array is returned.
                                 "@container": "@set"
                             },
                             "xsd": "http://www.w3.org/2001/XMLSchema#",
-                            "ol": "http://openlicensing.org/ns/op/1.1/",
+                            "ol": "http://openpermissions.org/ns/op/1.1/",
                             "permission": {
                                 "type": "@id",
                                 "@container": "@set"
                             },
                             "dct": "http://purl.org/dc/terms/",
-                            "id": "http://openlicensing.org/ns/id/"
+                            "id": "http://openpermissions.org/ns/id/"
                         },
                         "@graph": [
                             {
@@ -1570,7 +1570,7 @@ If no assets are found, an empty array is returned.
                                         "@id": "id:354fb35fa44c4db6800a53760a92394b"
                                     }
                                 ],
-                                "profile": "http://openlicensing.org/ns/op/1.1/",
+                                "profile": "http://openpermissions.org/ns/op/1.1/",
                                 "uid": "c63ad720fcfa48d88e7f81f65f6e648f",
                                 "assigner": {
                                     "@id": "id:ed3a5a3b1ae845268bfcdc60c6ec98bf"
@@ -1883,7 +1883,7 @@ If no assets are found, an empty array is returned.
                         },
                         "owl": "http://www.w3.org/2002/07/owl#",
                         "@vocab": "http://www.w3.org/ns/odrl/2/",
-                        "hub": "http://openlicensing.org/ns/hub/",
+                        "hub": "http://openpermissions.org/ns/hub/",
                         "constraint": {
                             "type": "@id",
                             "@container": "@set"
@@ -1895,7 +1895,7 @@ If no assets are found, an empty array is returned.
                             "@container": "@set"
                         },
                         "dc": "http://purl.org/dc/elements/1.1/",
-                        "opex": "http://openlicensing.org/ns/opex/1.0/",
+                        "opex": "http://openpermissions.org/ns/opex/1.0/",
                         "op:alsoIdentifiedBy": {
                             "type": "@id",
                             "@container": "@set"
@@ -1906,13 +1906,13 @@ If no assets are found, an empty array is returned.
                             "@container": "@set"
                         },
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
-                        "ol": "http://openlicensing.org/ns/op/1.1/",
+                        "ol": "http://openpermissions.org/ns/op/1.1/",
                         "permission": {
                             "type": "@id",
                             "@container": "@set"
                         },
                         "dct": "http://purl.org/dc/terms/",
-                        "id": "http://openlicensing.org/ns/id/"
+                        "id": "http://openpermissions.org/ns/id/"
                     },
                     "@graph": [
                     {
@@ -1998,7 +1998,7 @@ If no assets are found, an empty array is returned.
                             "@id": "id:86ff1f0e224e497b8f8c05ae1181844f1293"
                         }
                         ],
-                        "profile": "http://openlicensing.org/ns/op/1.1/",
+                        "profile": "http://openpermissions.org/ns/op/1.1/",
                         "type": "offer",
                         "dct:references": {
                             "@id": "id:86ff1f0e224e497b8f8c05ae1181844f"
@@ -2386,14 +2386,14 @@ Allows to get information about a specific asset set.
                             "type": "@id",
                             "@container": "@set"
                         },
-                        "hub": "http://openlicensing.org/ns/hub/",
+                        "hub": "http://openpermissions.org/ns/hub/",
                         "constraint": {
                             "type": "@id",
                             "@container": "@set"
                         },
                         "@language": "en",
                         "dc": "http://purl.org/dc/elements/1.1/",
-                        "opex": "http://openlicensing.org/ns/opex/1.0/",
+                        "opex": "http://openpermissions.org/ns/opex/1.0/",
                         "op:alsoIdentifiedBy": {
                             "type": "@id",
                             "@container": "@set"
@@ -2405,13 +2405,13 @@ Allows to get information about a specific asset set.
                             "@container": "@set"
                         },
                         "xsd": "http://www.w3.org/2001/XMLSchema#",
-                        "ol": "http://openlicensing.org/ns/op/1.1/",
+                        "ol": "http://openpermissions.org/ns/op/1.1/",
                         "permission": {
                             "type": "@id",
                             "@container": "@set"
                         },
                         "dcterm": "http://purl.org/dc/terms/",
-                        "id": "http://openlicensing.org/ns/id/"
+                        "id": "http://openpermissions.org/ns/id/"
                     },
                     "@id": "id:32cc52c126a94d5aa8bd6cc3e2c1f6a5",
                     "@type": "op:Set"
