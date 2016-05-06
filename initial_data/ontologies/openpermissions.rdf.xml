@@ -340,7 +340,7 @@ Policy is the central entity that holds an ODRL policy together. In its encoded 
 Indicates if the predicate used to connect the set to its elements,
 are "pointing to" the elements or "pointing from" the elements
 </dc:description>
-    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/ol/1.1/"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSetEdgeDirection</rdfs:label>
   </rdf:Description>
   <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/Hubkey">
@@ -402,7 +402,7 @@ Default value is 1.
     <rdf:type rdf:nodeID="ub1bL413C20"/>
     <rdfs:subClassOf rdf:resource="http://openpermissions.org/ns/op/1.1/Asset"/>
     <rdf:type rdf:nodeID="ub1bL423C9"/>
-    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/ol/1.1/"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
     <rdf:type rdf:nodeID="ub1bL420C9"/>
     <dc:description xml:lang="en">
 An asset that is actually sampled from a set. An AssetSetSample must indicate the set asset must be selected from, m
@@ -492,7 +492,7 @@ Title of the asset for the purpose of presentation to a Licensee.
     <dc:description xml:lang="en">
 A set defined as the set of element pointing to a target object via a certain predicate.
 </dc:description>
-    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/ol/1.1/"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
     <dc:description xml:lang="en">
 A set or collection of elements of type elementType
 </dc:description>
@@ -549,7 +549,7 @@ A set or collection of elements of type elementType
   <rdf:Description rdf:about="http://openpermissions.org/ns/op/1.1/AssetSetSamplePolicy">
     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">AssetSetSamplePolicy</rdfs:label>
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/ol/1.1/"/>
+    <rdfs:isDefinedBy rdf:resource="http://openpermissions.org/ns/op/1.1/"/>
     <dc:description xml:lang="en">
 Indicates the way sampling from a set is done.
 </dc:description>
