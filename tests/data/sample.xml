@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF
-   xmlns:odrlchub="http://digicat.io/ns/ol/1.0/"
+   xmlns:odrlchub="http://digicat.io/ns/op/1.0/"
    xmlns:odrlext="http://digicat.io/ns/opex/0.1/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 >
   <rdf:Description rdf:about="https://openpermissions.org/s0/hub1/asset/exampleco/examplecopictureid/10000010">
-    <rdf:type rdf:resource="http://digicat.io/ns/ol/1.0/Asset"/>
+    <rdf:type rdf:resource="http://digicat.io/ns/op/1.0/Asset"/>
     <odrlext:suppliedBy rdf:resource="http://openpermissions.org/s0/hub1/party/exampleco/examplecosupplierid/EXAMPLE-CO-PICTURE-LIBRARY"/>
     <odrlext:distributedBy rdf:resource="https://openpermissions.org/s0/hub1/party/chub/pid/exampleco"/>
     <odrlchub:alsoIdentifiedBy>
         <rdf:Description>
           <odrlchub:value rdf:datatype="http://www.w3.org/2001/XMLSchema#string">10000010</odrlchub:value>
-          <rdf:type rdf:resource="http://digicat.io/ns/ol/1.0/Id"/>
+          <rdf:type rdf:resource="http://digicat.io/ns/op/1.0/Id"/>
           <odrlchub:idtype rdf:datatype="http://www.w3.org/2001/XMLSchema#string">examplecopictureid</odrlchub:idtype>
         </rdf:Description>
     </odrlchub:alsoIdentifiedBy>
