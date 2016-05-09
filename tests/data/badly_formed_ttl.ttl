@@ -2,9 +2,9 @@
 @prefix ns1: <http://openpermissions.org/ns/op/1.0/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://copyrighthub.org/s0/hub1/asset/exampleco/examplecopictureid/10000010>
+<https://openpermissions.org/s0/hub1/asset/exampleco/examplecopictureid/10000010>
   a <http://openpermissions.org/ns/op/1.0/Asset> ;
-  ns0:suppliedBy <http://copyrighthub.org/s0/hub1/party/exampleco/examplecosupplierid/EXAMPLE-CO-PICTURE-LIBRARY> ;
-  ns0:distributedBy <https://copyrighthub.org/s0/hub1/party/chub/pid/exampleco> ;
+  ns0:suppliedBy <http://openpermissions.org/s0/hub1/party/exampleco/examplecosupplierid/EXAMPLE-CO-PICTURE-LIBRARY> ;
+  ns0:distributedBy <https://openpermissions.org/s0/hub1/party/chub/pid/exampleco> ;
   ns1:alsoIdentifiedBy
-  ns0:explicitOffer <https://www.copyrighthub.org/s0/hub1/offer/chub/exampleco-offerid/01>
+  ns0:explicitOffer <https://www.openpermissions.org/s0/hub1/offer/chub/exampleco-offerid/01>

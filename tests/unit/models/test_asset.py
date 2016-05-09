@@ -27,23 +27,23 @@ from .util import create_mockdb
 
 ASSET_TEMPLATE = """
 _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Id> .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/distributedBy> <https://copyrighthub.org/s0/hub1/party/pid/4corners> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/distributedBy> <https://openpermissions.org/s0/hub1/party/pid/testco> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://openpermissions.org/ns/op/1.0/value> "e48e2bb8-bda5-424e-885d-c2ffec1fe887" .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/description> "Deer" .
-<https://copyrighthub.org/s0/hub1/party/rightsourceid/RightSource1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
+<https://openpermissions.org/s0/hub1/party/rightsourceid/RightSource1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
 _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://openpermissions.org/ns/op/1.0/value> "23" .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/alsoIdentifiedBy> _:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 .
-<https://copyrighthub.org/s0/hub1/right/bapla/hk/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://copyrighthub.org/s0/hub1/right/bapla/hk/11> .
+<https://openpermissions.org/s0/hub1/right/bapla/hk/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://openpermissions.org/s0/hub1/right/bapla/hk/11> .
 <{hub_key}> <http://openpermissions.org/ns/op/1.0/alsoIdentifiedBy> _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/suppliedBy> <https://copyrighthub.org/s0/hub1/party/rightsourceid/RightSource1> .
-<https://copyrighthub.org/s0/hub1/right/bapla/hk/11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
-_:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://openpermissions.org/ns/op/1.0/id_type> "4cornerspictureid" .
-<https://copyrighthub.org/s0/hub1/party/pid/4corners> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/suppliedBy> <https://openpermissions.org/s0/hub1/party/rightsourceid/RightSource1> .
+<https://openpermissions.org/s0/hub1/right/bapla/hk/11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Policy> .
+_:Id1_d435a6cdd786300dff204ee7c2ef942d3e9034e2_N28_ad0d7ec34e9135c60ece82d3d231d0e0c75a6a46_N30 <http://openpermissions.org/ns/op/1.0/id_type> "testcopictureid" .
+<https://openpermissions.org/s0/hub1/party/pid/testco> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Party> .
 <{hub_key}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Asset> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://openpermissions.org/ns/op/1.0/Id> .
 _:Id1_8f21840a222b74b97016b6a91781ac43414356d7_N33_8707c18164e538ad0dbbea652968661c2f7f9b0d_N32 <http://openpermissions.org/ns/op/1.0/id_type> "picscoutpictureid" .
-<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://copyrighthub.org/s0/hub1/right/bapla/hk/12> .
+<{hub_key}> <http://openpermissions.org/ns/opex/0.1/explicitOffer> <https://openpermissions.org/s0/hub1/right/bapla/hk/12> .
 """
 
 FIXTURE_DIR = os.path.join(os.path.dirname(__file__), '../..', 'data')
@@ -56,7 +56,7 @@ def get_valid_xml():
 
 
 def test_foo():
-    hub_key = 'https://copyrighthub.org/s0/hub1/asset/4corners/4cornerspictureid/{}'.format(uuid.uuid4())
+    hub_key = 'https://openpermissions.org/s0/hub1/asset/testco/testcopictureid/{}'.format(uuid.uuid4())
     doc = ASSET_TEMPLATE.format(hub_key=hub_key)
     results = asset.get_asset_ids(doc, 'text/rdf+n3')
     expected = [
@@ -65,14 +65,14 @@ def test_foo():
          u'source_id_type': u'picscoutpictureid'},
         {u'entity_id': hub_key.split('/')[-1],
          u'source_id': u'23',
-         u'source_id_type': u'4cornerspictureid'}]
+         u'source_id_type': u'testcopictureid'}]
     assert sorted(results) == sorted(expected)
 
 
 @patch('repository.models.asset.send_notification', return_value=make_future(None))
 @patch('repository.models.asset.get_asset_ids', return_value=[{u'entity_id': 'fa0',
          u'source_id': u'id1',
-         u'source_id_type': u'4cornerspictureid'}])
+         u'source_id_type': u'testcopictureid'}])
 @gen_test
 def test_store_db_called(get_asset_ids, send_notification):
     db = DatabaseConnection(TEST_NAMESPACE)
@@ -88,7 +88,7 @@ def test_store_db_called(get_asset_ids, send_notification):
 @patch('repository.models.asset.send_notification', return_value=make_future(None))
 @patch('repository.models.asset.get_asset_ids', return_value=[{u'entity_id': 'fa0',
          u'source_id': u'id1',
-         u'source_id_type': u'4cornerspictureid'}])
+         u'source_id_type': u'testcopictureid'}])
 @gen_test
 def test_store_db_called_with_content_type(get_asset_ids, send_notification):
     db = create_mockdb()
