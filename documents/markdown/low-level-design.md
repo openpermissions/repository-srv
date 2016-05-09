@@ -19,7 +19,7 @@ The repository service is responsible for maintaining repositories.
 ![](./images/entity-relationship.png)
 
 ### Asset
-An **asset** is an enttiy which can be copyrighted. The assets are stored adhering to an
+An **asset** is an entity which can be copyrighted. The assets are stored adhering to an
 ontology based on Open Digital Rights Language (ODRL).
 
 More information on ODRL can be found [here](https://www.w3.org/ns/odrl/2/)
