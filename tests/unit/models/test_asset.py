@@ -60,12 +60,7 @@ def test_foo():
     doc = ASSET_TEMPLATE.format(hub_key=hub_key)
     results = asset.get_asset_ids(doc, 'text/rdf+n3')
     expected = [
-        {u'entity_id': hub_key.split('/')[-1],
-         u'source_id': u'e48e2bb8-bda5-424e-885d-c2ffec1fe887',
-         u'source_id_type': u'picscoutpictureid'},
-        {u'entity_id': hub_key.split('/')[-1],
-         u'source_id': u'23',
-         u'source_id_type': u'testcopictureid'}]
+        {u'entity_id': hub_key.split('/')[-1]}]
     assert sorted(results) == sorted(expected)
 
 
@@ -428,9 +423,19 @@ def test__insert_ids_contains_assetid():
         entity_id,
         [{'source_id': 'id1', 'source_id_type': 'id_type1'}])
     assert db.update.call_count==1
-    print list(db.update.call_args)
     assert db.update.call_args[0][0].find(entity_id) >= 0
 
+
+@gen_test
+def test_get_also_identified_id():
+    db = create_mockdb()
+    tres = [{'source_id': 'aa'}, {'source_id': 'bb'}]
+    db.query.return_value = make_future(tres)
+    res = yield asset.Asset.get_also_identified_by(
+        db,
+        "a01230123013"
+    )
+    assert (res == tres)
 
 @gen_test
 def test__insert_ids_update_csv():

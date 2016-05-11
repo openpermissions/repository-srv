@@ -14,7 +14,9 @@ import uuid
 import logging
 import urllib
 
+from rdflib.query import Result
 import rdflib.graph
+
 from chub import API
 from chub.oauth2 import Write, get_token
 from functools import partial
@@ -22,12 +24,13 @@ from tornado.gen import coroutine, Return
 from tornado.ioloop import IOLoop
 from tornado.options import options
 
-from .framework import db
 from .queries.asset import (ASSET_CLASS,
                             ASSET_APPEND_ALSO_IDENTIFIED,
                             ASSET_QUERY_ALL_IDS,
+                            ASSET_QUERY_ALL_ENTITY_IDS,
                             ASSET_LIST_EXTRA_IDS,
                             ASSET_LIST_EXTRA_QUERY,
+                            ASSET_GET_ALSO_IDENTIFIED,
                             ASSET_SELECT_BY_SOURCE_ID,
                             ASSET_SELECT_BY_ENTITY_ID,
                             ASSET_STRUCT_SELECT
@@ -35,6 +38,7 @@ from .queries.asset import (ASSET_CLASS,
 from .queries.generic import *
 from .framework.entity import Entity, build_sparql_str, build_uuid_reference, build_hub_reference, ENTITY_ID_REGEX
 from .framework.helper import isoformat
+
 
 TYPE_MAPPING = {
     'text/rdf+n3': 'n3',
@@ -96,30 +100,24 @@ def get_asset_ids(assets_data, content_type):
     """
     graph = rdflib.graph.Graph()
     graph.parse(data=assets_data, format=TYPE_MAPPING[content_type])
-    result = graph.query(ASSET_QUERY_ALL_IDS)
-    result = [
-        {
-            u'source_id': unicode(row.source_id),
-            u'source_id_type': unicode(row.source_id_type),
-            u'entity_id': unicode(row.entity_uri).split('/')[-1]
-        }
-        for row in result]
+    result = graph.query(SPARQL_PREFIXES+ ASSET_QUERY_ALL_ENTITY_IDS)
+    result = [{u'entity_id': x[u'entity_id'].split('/')[-1]} for x in result]
     return result
 
 
 @coroutine
-def add_ids(repository, source_id, ids):
+def add_ids(repository, entity_id, ids):
     """
     Add ids to an asset
     :param repository:  repository/namespace
-    :param source_id: the hub key for the asset
+    :param entity_id: the hub key for the asset
     :param ids: the new ids
     :return: a list of errors
     """
     errors = _validate_ids(ids)
     if ids and not errors:
-        yield _insert_ids(repository, source_id, ids)
-        yield insert_timestamps(repository, [source_id])
+        yield _insert_ids(repository, entity_id, ids)
+        yield insert_timestamps(repository, [entity_id])
 
     raise Return(errors)
 
@@ -180,6 +178,31 @@ class Asset(Entity):
     # LIST VIEW
     LIST_EXTRA_IDS = ASSET_LIST_EXTRA_IDS
     LIST_EXTRA_QUERY = ASSET_LIST_EXTRA_QUERY
+
+    @classmethod
+    @coroutine
+    def get_also_identified_by(cls, cdb, entity_id):
+        """
+        Attach license objects to asset data
+        :param cdb: db containing the licenses
+        :param entity_id: the asset being queried
+        :return: a list of source_id and source_id_type
+        """
+
+        rsp = yield cdb.query(
+            SPARQL_PREFIXES + (
+              ASSET_GET_ALSO_IDENTIFIED.format(
+                entity_id=cls.normalise_id(entity_id)
+              )
+            )
+        )
+
+        if hasattr(rsp, "buffer"):
+            result = list(Result.parse(rsp.buffer))
+        else:
+            result = rsp
+
+        raise Return([{'source_id_type': x[0].split('/')[-1], 'source_id': x[1]} for x in result])
 
     @classmethod
     def asset_subselect_idlist(cls, idlist, idname="entity"):
