@@ -1,6 +1,14 @@
 Open Permissions Platform Repository Service
 ============================================
 
+Useful Links
+============
+* [Open Permissions Platform](http://openpermissions.org)
+* [Low level Design](https://github.com/openpermissions/repository-srv/blob/master/documents/markdown/low-level-design.md)
+* [API Documentation] (https://github.com/openpermissions/repository-srv/blob/master/documents/apiary/api.md)
+
+Service Overview
+================
 This repository contains the Repository Service for the Open Permissions Platform.
 
 The Repository Service provides the mechanisms for storage and retrieval of licensing data.
@@ -9,10 +17,10 @@ It provides a multi-tenant facility, with each client's data stored in repositor
 The REStful interface is very similar to that of the Query Service, in order to support end users directly communicating with a repository or via a federating service.
 
 Running locally
-===============
+---------------
 #### blazegraph data store
 
-Follow the instruction on blazegraph in [developer environment setup doc]( https://github.com/openpermissions/dev-environment#blazegraph).
+Follow the instruction on [blazegraph](https://www.blazegraph.com/) to set up a data store for the repository service.
 
 #### repository service application
 
@@ -35,7 +43,7 @@ python repository/ -t [--test]
 ```
 
 Running tests and generating code coverage
-==========================================
+------------------------------------------
 To have a clean target from build artifacts:
 
 ```
@@ -69,7 +77,7 @@ make docs
 
 
 Loading initial data
-====================
+--------------------
 
 To add inital data to the repository, run the following command:
 
