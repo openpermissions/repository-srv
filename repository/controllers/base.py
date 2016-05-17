@@ -18,6 +18,7 @@ from tornado.options import options
 
 from koi.exceptions import HTTPError
 from koi.base import BaseHandler
+from koi.configure import ssl_server_options
 
 from repository.models.framework.helper import PermissionException, ValidationException
 
@@ -64,7 +65,7 @@ class RepoBaseHandler(BaseHandler):
         client = API(options.url_auth,
                      auth_username=options.service_id,
                      auth_password=options.client_secret,
-                     ca_certs=options.ssl_ca_cert)
+                     ssl_options=ssl_server_options())
         headers = {'Content-Type': 'application/x-www-form-urlencoded',
                    'Accept': 'application/json'}
         data = {

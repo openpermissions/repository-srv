@@ -19,6 +19,7 @@ import rdflib.graph
 
 from chub import API
 from chub.oauth2 import Write, get_token
+from koi.configure import ssl_server_options
 from functools import partial
 from tornado.gen import coroutine, Return
 from tornado.ioloop import IOLoop
@@ -141,10 +142,10 @@ def send_notification(repository, **kwargs):
                                 options.service_id,
                                 options.client_secret,
                                 scope=Write(options.url_index),
-                                ca_certs=options.ssl_ca_cert)
+                                ssl_options=ssl_server_options())
         client = API(options.url_index,
                      token=token,
-                     ca_certs=options.ssl_ca_cert)
+                     ssl_options=ssl_server_options())
         client.index.notifications.prepare_request(
             request_timeout=options.request_timeout,
             headers=headers,
