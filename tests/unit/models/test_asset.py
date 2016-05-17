@@ -60,12 +60,7 @@ def test_foo():
     doc = ASSET_TEMPLATE.format(hub_key=hub_key)
     results = asset.get_asset_ids(doc, 'text/rdf+n3')
     expected = [
-        {u'entity_id': hub_key.split('/')[-1],
-         u'source_id': u'e48e2bb8-bda5-424e-885d-c2ffec1fe887',
-         u'source_id_type': u'picscoutpictureid'},
-        {u'entity_id': hub_key.split('/')[-1],
-         u'source_id': u'23',
-         u'source_id_type': u'testcopictureid'}]
+        {u'entity_id': hub_key.split('/')[-1]}]
     assert sorted(results) == sorted(expected)
 
 
@@ -428,9 +423,23 @@ def test__insert_ids_contains_assetid():
         entity_id,
         [{'source_id': 'id1', 'source_id_type': 'id_type1'}])
     assert db.update.call_count==1
-    print list(db.update.call_args)
     assert db.update.call_args[0][0].find(entity_id) >= 0
 
+
+@gen_test
+def test_get_also_identified_id():
+    db = create_mockdb()
+    query_res = [('bbb', 'bb'), ('sss', 'bb')]
+    expected_res = [{'source_id_type': x[0], 'source_id': x[1]} for x in query_res]
+    db.query.return_value = make_future(query_res)
+
+    with patch('repository.models.asset.Asset._parse_response') as parse_response:
+        parse_response.side_effect = lambda x: x
+        res = yield asset.Asset.get_also_identified_by(
+            db,
+            "a01230123013"
+        )
+    assert (res == expected_res)
 
 @gen_test
 def test__insert_ids_update_csv():

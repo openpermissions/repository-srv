@@ -19,10 +19,18 @@ ASSET_LIST_EXTRA_QUERY = """
 """
 
 ASSET_APPEND_ALSO_IDENTIFIED = """
-   {entity_id} op:alsoIdentifiedBy  _:bnode .
+   {entity_id} op:alsoIdentifiedBy  _:bnode{bnodeuuid0} .
   _:bnode{bnodeuuid0} op:id_type {source_id_type} .
   _:bnode{bnodeuuid0} op:value	{source_id_value} .
   _:bnode{bnodeuuid0} rdf:type	op:Id .
+    """
+
+ASSET_GET_ALSO_IDENTIFIED = """
+SELECT ?source_id_type ?source_id WHERE {{
+  {entity_id} op:alsoIdentifiedBy ?id .
+   ?id op:id_type  ?source_id_type .
+   ?id op:value ?source_id .
+}}
 """
 
 # CHANGE THE ASSOCIATED OFFER TO AN ASSET IF THE OFFER REFERS TO IT DIRECTLY
@@ -70,8 +78,17 @@ WHERE
 }
 '''
 
+ASSET_QUERY_ALL_ENTITY_IDS = """
+PREFIX op: <http://openpermissions.org/ns/op/1.0/>
+
+SELECT DISTINCT ?entity_id WHERE
+{
+  ?entity_id rdf:type op:Asset  .
+}
+"""
+
 ASSET_SELECT_BY_ENTITY_ID = """
-SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type {{
+SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
     VALUES (?{idname}_id_value) {{
         {idlist}
     }}

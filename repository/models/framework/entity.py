@@ -61,6 +61,10 @@ class Entity(object):
     STRUCT_SELECT = None
 
     @classmethod
+    def _parse_response(cls, rsp):
+        return list(Result.parse(rsp.buffer))
+
+    @classmethod
     def safe_id(cls, id):
         """
         Method to ensure an id used is sparql safe (general)
@@ -233,10 +237,7 @@ class Entity(object):
 
         rsp = yield repository.query(query)
 
-        if hasattr(rsp, "buffer"):
-            result = list(Result.parse(rsp.buffer))
-        else:
-            result = rsp
+        result = cls._parse_response(rsp)
 
         raise Return(result)
 
@@ -320,10 +321,7 @@ class Entity(object):
 
         rsp = yield repository.query(query)
 
-        if hasattr(rsp, "buffer"):
-            result = list(Result.parse(rsp.buffer))
-        else:
-            result = list(rsp)
+        result = cls._parse_response(rsp)
 
         result = [x[0] for x in result]
         raise Return(result)

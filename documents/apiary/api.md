@@ -538,6 +538,52 @@ even if the next page is empty.
     + asset_id (required, string)
         Id of the asset to update
 
+### List Identifiers associted with an Asset [GET]
+
+
+| OAuth Token Scope |
+| :----------       |
+| read              |
+
+#### Output
+| Property | Description               | Type   |
+| :------- | :----------               | :---   |
+| status   | The status of the request | number |
+| data     | list of Source_id objects | list   |
+
+
+##### Source Id Object
+| Property       | Description        | Type   |
+| :-------       | :----------        | :---   |
+| source_id_type | The type of the id | string |
+| source_id      | The id             | string |
+
++ Request list source_ids associated with an asset (application/json; charset=utf-8)
+    + Headers
+
+            Accept: application/json
+            Authorization: Bearer [TOKEN]
+
++ Response 200 (application/json; charset=UTF-8)
+
+    + Body
+
+            {
+                "status": 200,
+                "data" : [
+                    {
+                        "source_id_type": "ISBN",
+                        "source_id": "0123456789"
+                    },
+                    {
+                        "source_id_type": "ISNI",
+                        "source_id": "0000000121032684"
+                    }
+                ]
+            }
+
+
+
 ### Add Identifiers to an Asset [POST]
 
 | OAuth Token Scope |

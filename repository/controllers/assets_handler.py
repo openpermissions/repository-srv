@@ -27,7 +27,6 @@ from ..models.framework import helper
 from ..models.framework.db import DatabaseConnection
 from ..models.framework.helper import isoformat
 
-
 def _validate_body(request):
     if request.body is None:
         raise HTTPError(400, "No Data in Body")
@@ -111,7 +110,7 @@ class IdentifiersHandler(RepoBaseHandler):
         result_range = None
         from_time, to_time = self._get_time_arguments()
         page, page_size = self._get_page_arguments()
-        status=200
+        status = 200
 
         # fetch the identifiers
         try:
@@ -220,6 +219,17 @@ class AssetIDHandler(RepoBaseHandler):
             audit.log_asset_ids(self.client_organisation, entity_id, data['ids'])
             self.finish({'status': 200})
 
+    @gen.coroutine
+    def get(self, repository_id, entity_id):
+        """Respond with JSON with source_id and source_id_type for entity."""
+        dbc = DatabaseConnection(repository_id)
+        exists = yield asset.exists(dbc, entity_id)
+        if not exists:
+            raise HTTPError(404, 'Asset "{}" does not exist '.format(entity_id))
+
+        result = yield asset.Asset.get_also_identified_by(dbc, entity_id)
+
+        self.finish({'status': 200, 'data': result})
 
 class BulkOfferHandler(RepoBaseHandler):
     """Handler for offers"""
