@@ -432,10 +432,9 @@ def test_get_also_identified_id():
     query_res = [('bbb', 'bb'), ('sss', 'bb')]
     expected_res = [{'source_id_type': x[0], 'source_id': x[1]} for x in query_res]
     db.query.return_value = make_future(query_res)
-    orig_parse_reponse = asset.Asset._parse_response
 
     with patch('repository.models.asset.Asset._parse_response') as parse_response:
-        parse_response.side_effect = lambda x: (orig_parse_reponse(x) if hasattr(x, "buffer") else x)
+        parse_response.side_effect = lambda x: x
         res = yield asset.Asset.get_also_identified_by(
             db,
             "a01230123013"
