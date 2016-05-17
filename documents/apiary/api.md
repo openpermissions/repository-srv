@@ -558,7 +558,7 @@ even if the next page is empty.
 | source_id_type | The type of the id | string |
 | source_id      | The id             | string |
 
-+ Request list source_ids to associated with an asset (application/json; charset=utf-8)
++ Request list source_ids associated with an asset (application/json; charset=utf-8)
     + Headers
 
             Accept: application/json
