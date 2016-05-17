@@ -91,7 +91,7 @@ def test_set_get_match_attr():
     g = rdflib.Graph()
     old_query = g.query
 
-    def new_query(query,*args, **kwargs):
+    def new_query(query, *args, **kwargs):
         lines = query.split("\n")
         query = "\n".join([l for l in lines if "hint:Query hint:optimizer \"Runtime\"" not in l])
         use_json = 0
@@ -111,6 +111,9 @@ def test_set_get_match_attr():
     g.query = new_query
     wg = future_wrap(g)
     e = entity(class_)
+
+    orig_parse_reponse = e._parse_response
+    e._parse_response = classmethod(lambda cls, x: (orig_parse_reponse(x) if hasattr(x, "buffer") else x))
 
     r = yield e.match_attr(wg, entity_id, "hub:pred1")
     assert not r

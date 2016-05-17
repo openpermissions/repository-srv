@@ -197,10 +197,7 @@ class Asset(Entity):
             )
         )
 
-        if hasattr(rsp, "buffer"):
-            result = list(Result.parse(rsp.buffer))
-        else:
-            result = rsp
+        result = cls._parse_response(rsp)
 
         raise Return([{'source_id_type': x[0].split('/')[-1], 'source_id': x[1]} for x in result])
 
