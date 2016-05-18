@@ -7,7 +7,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-
+# Prefixes of the namespaces that we use
+# will be added to sparql queries and turtle data and JSON-LD context
 PREFIXES = {
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
@@ -37,6 +38,8 @@ JSON_LD_CONTEXT.update({
 SPARQL_PREFIXES = "\n".join("PREFIX %s: <%s>" % i for i in PREFIXES.items())+"\n"
 TURTLE_PREFIXES = "\n".join("@prefix %s: <%s> ." % i for i in PREFIXES.items())+"\n"
 
+# Returns true if an entity is of a certain class
+# and filters are satisfied
 GENERIC_CHECK_EXISTS = """
 ASK  WHERE {{
     hint:Query hint:optimizer "Runtime" .
@@ -56,6 +59,13 @@ WHERE {{
 }}
 """
 
+# return id
+# id_name: name of the variable for the id for use in subqueries !
+# extra_query : additional SPAQL query
+# extra_query_ids : variables that are defined and exported from the addtional capture
+# page_size : number of results to return
+# offset : start index of returned results
+# filters: additional SPARQL filter on the id_name
 GENERIC_LIST = """
 SELECT ?{id_name} {extra_query_ids} ?last_modified
 WHERE {{
@@ -104,7 +114,7 @@ WHERE {
 """
 
 
-GENERIC_GET_ATTR = '''
+GENERIC_GET_ATTR = """
 SELECT ?o WHERE
 {{
   hint:Query hint:optimizer "Runtime" .
@@ -113,10 +123,10 @@ SELECT ?o WHERE
   {filter}
 }}
 {pagination}
-'''
+"""
 
 
-GENERIC_MATCH_ATTR = '''
+GENERIC_MATCH_ATTR = """
 ASK WHERE
 {{
   hint:Query hint:optimizer "Runtime" .
@@ -124,14 +134,16 @@ ASK WHERE
   {id} {predicate} {value} .
   {filter}
 }}
-'''
+"""
 
 
-GENERIC_SET_ATTR = '''
+GENERIC_SET_ATTR = """
    {id} {predicate} {value} .
-'''
+"""
 
-
+# %s is the STRUCT_QUERY which is responsible for
+# defining the structure of the subgraph to be matched.
+# it enumerates the subjects that correspond to internal sub-objects.
 GENERIC_GET = """
 CONSTRUCT {{ ?s ?p ?o }}
 WHERE

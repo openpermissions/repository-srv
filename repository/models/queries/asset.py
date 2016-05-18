@@ -10,6 +10,9 @@
 
 ASSET_CLASS = "op:Asset"
 
+# Used in conjuncting with GENERIC_LIST query
+# NOTE: This return all possible combinations of entity_id and alsoIdentifiedBy_id
+# which is what we need for the index
 ASSET_LIST_ID_NAME = "entity"
 ASSET_LIST_EXTRA_IDS = """?source_id_value ?source_id_type"""
 ASSET_LIST_EXTRA_QUERY = """
@@ -33,19 +36,11 @@ SELECT ?source_id_type ?source_id WHERE {{
 }}
 """
 
-# CHANGE THE ASSOCIATED OFFER TO AN ASSET IF THE OFFER REFERS TO IT DIRECTLY
-ASSET_ADD_OFFER_DIRECT = '''
-INSERT
-{{
-   {new_offer_id} odrl:target ?s .
-}}
-WHERE
-{{
-  ?s rdf:type op:Asset .
-  {old_offer_id} odrl:target ?s .
-}}
-'''
 
+# Returns offers or agreements associated with an asset
+# The policies are associated either directly via odrl:target
+#  or via an a set and an asset selector through odrl:target/op:fromSet/op:hasElement
+# subquery : responsible for getting {idname}_entity {idname}_id_type {idname}_id_value
 ASSET_GET_POLICIES_FOR_ASSETS = """
 SELECT ?{idname}_id_bundle  (GROUP_CONCAT(DISTINCT ?entity_entity; separator='|') as ?ids) (GROUP_CONCAT(DISTINCT ?policy; separator='|') as ?policies)
 WHERE
@@ -65,19 +60,9 @@ GROUP BY ?{idname}_id_bundle
 """
 
 # UTILITY
-ASSET_QUERY_ALL_IDS = '''
-PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 
-SELECT ?entity_uri ?source_id_type ?source_id
-WHERE
-{
-  ?entity_uri rdf:type op:Asset ;
-           op:alsoIdentifiedBy ?altid .
-           ?altid op:id_type ?source_id_type ;
-                  op:value ?source_id .
-}
-'''
-
+# NOTE: note used in blazegraph when onboarding
+# assets to identify the assets coming from the user.
 ASSET_QUERY_ALL_ENTITY_IDS = """
 PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 
@@ -87,6 +72,7 @@ SELECT DISTINCT ?entity_id WHERE
 }
 """
 
+# NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
 ASSET_SELECT_BY_ENTITY_ID = """
 SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
     VALUES (?{idname}_id_value) {{
@@ -97,6 +83,7 @@ SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
 }}
 """
 
+# NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
 ASSET_SELECT_BY_SOURCE_ID = """
 SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
     VALUES ( ?{idname}_id_type ?{idname}_id_value) {{
@@ -108,5 +95,6 @@ SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
 }}
 """
 
-
+# Returns the subjects of the triples that are involved in an asset identified by asset_id
+# used by GENERIC_GET
 ASSET_STRUCT_SELECT = """ SELECT DISTINCT ?s {{ {id} (op:alsoIdentifiedBy)? ?s . }} """

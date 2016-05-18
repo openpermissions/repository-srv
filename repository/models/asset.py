@@ -27,7 +27,6 @@ from tornado.options import options
 
 from .queries.asset import (ASSET_CLASS,
                             ASSET_APPEND_ALSO_IDENTIFIED,
-                            ASSET_QUERY_ALL_IDS,
                             ASSET_QUERY_ALL_ENTITY_IDS,
                             ASSET_LIST_EXTRA_IDS,
                             ASSET_LIST_EXTRA_QUERY,
@@ -101,7 +100,7 @@ def get_asset_ids(assets_data, content_type):
     """
     graph = rdflib.graph.Graph()
     graph.parse(data=assets_data, format=TYPE_MAPPING[content_type])
-    result = graph.query(SPARQL_PREFIXES+ ASSET_QUERY_ALL_ENTITY_IDS)
+    result = graph.query(SPARQL_PREFIXES + ASSET_QUERY_ALL_ENTITY_IDS)
     result = [{u'entity_id': x[u'entity_id'].split('/')[-1]} for x in result]
     return result
 

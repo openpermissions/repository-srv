@@ -7,7 +7,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-
+# template to create a party
+# provider = organisation that provides the reference
+# reference = id used by the organisation to identify the party if present other the organisation itself
 PARTY_TEMPLATE = """
  {id} a {class_} .
  {id} op:provider {provider} .

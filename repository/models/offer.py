@@ -22,7 +22,6 @@ from .queries.policy import (
     OFFER_LIST_EXTRA_QUERY
 )
 from .queries.generic import (PREFIXES, SPARQL_PREFIXES)
-from .queries.asset import ASSET_ADD_OFFER_DIRECT
 from .framework.helper import (isoformat, solve_ns, future_wrap,
                                ValidationException)
 from .policy import Policy
