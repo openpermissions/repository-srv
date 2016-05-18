@@ -16,7 +16,7 @@ SET_LIST_EXTRA_QUERY = """
     OPTIONAL {{ ?{id_name} dcterm:title ?title . }}
 """
 
-# Template to create new serts
+# Template to create new sets
 # :param id: internal set id
 # :param class_: op:Set
 # :param title: Title of set

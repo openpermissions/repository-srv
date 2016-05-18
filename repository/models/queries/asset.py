@@ -90,8 +90,7 @@ SELECT DISTINCT ?entity_id WHERE
 }
 """
 
-# Gets asset by entity id
-# NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
+# Gets identifiers for an asset by entity id, for use in ASSET_GET_POLICIES_FOR_ASSETS
 # :param idname: name of the variable for the id
 # :param idlist: List of entity ids
 
@@ -108,10 +107,9 @@ SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
 }}
 """
 
-# Gets asset by source id
-# NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
+# Gets identifiers for an asset by id value & id type, for use in ASSET_GET_POLICIES_FOR_ASSETS
 # :param idname: name of the variable for the id
-# :param idlist: List of entity ids
+# :param idlist: List of idname_id_type and idname_id_value pairs
 
 # :returns idname_entity: name of the variable for the id value
 # :returns idname_id_value: source id value
