@@ -14,7 +14,6 @@ import uuid
 import logging
 import urllib
 
-from rdflib.query import Result
 import rdflib.graph
 
 from chub import API

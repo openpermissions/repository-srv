@@ -284,7 +284,6 @@ def test_request_has_body_type(fetch, url):
 @patch('repository.models.framework.db.AsyncHTTPClient.fetch', return_value=make_future('my response'))
 @gen_test
 def test_request_no_body_type(fetch, url):
-    db = DatabaseConnection(TEST_NAMESPACE)
     yield request(None, 'c8ab01', 'pay load')
     assert fetch.call_args[1]['body'] == 'pay load'
 
