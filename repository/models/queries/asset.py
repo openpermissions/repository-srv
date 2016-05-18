@@ -10,9 +10,11 @@
 
 ASSET_CLASS = "op:Asset"
 
-# Used in conjuncting with GENERIC_LIST query
-# NOTE: This return all possible combinations of entity_id and alsoIdentifiedBy_id
-# which is what we need for the index
+# Used in conjunction with GENERIC_LIST query
+# This return all possible combinations of entity_id and alsoIdentifiedBy_id which is what we need for the index
+# :param id_name: name of the variable for the id
+# :returns source_id_value: Value of Source Id for asset
+# :returns source_id_type: Type of Source Id for asset
 ASSET_LIST_ID_NAME = "entity"
 ASSET_LIST_EXTRA_IDS = """?source_id_value ?source_id_type"""
 ASSET_LIST_EXTRA_QUERY = """
@@ -21,6 +23,11 @@ ASSET_LIST_EXTRA_QUERY = """
                     op:value ?source_id_value .
 """
 
+# Adds a new alsoIdentifiedBy triple for entity
+# :param entity_id: Id of entity
+# :param source_id_type: Type of Source Id for asset
+# :param source_id_value: Value of Source Id for asset
+# :param bnodeuuid0: Dynamically generated identifier for blank node
 ASSET_APPEND_ALSO_IDENTIFIED = """
    {entity_id} op:alsoIdentifiedBy  _:bnode{bnodeuuid0} .
   _:bnode{bnodeuuid0} op:id_type {source_id_type} .
@@ -28,6 +35,10 @@ ASSET_APPEND_ALSO_IDENTIFIED = """
   _:bnode{bnodeuuid0} rdf:type	op:Id .
     """
 
+# Gets all alsoIdentifiedBy triples for entity
+# :param entity_id: Id of entity
+# :return source_id_type: Type of Source Id for asset
+# :return source_id: Value of Source Id for asset
 ASSET_GET_ALSO_IDENTIFIED = """
 SELECT ?source_id_type ?source_id WHERE {{
   {entity_id} op:alsoIdentifiedBy ?id .
@@ -37,10 +48,16 @@ SELECT ?source_id_type ?source_id WHERE {{
 """
 
 
-# Returns offers or agreements associated with an asset
+# Returns offers or agreements associated with an asset, grouped by source_id/source_id_type pairs
 # The policies are associated either directly via odrl:target
-#  or via an a set and an asset selector through odrl:target/op:fromSet/op:hasElement
-# subquery : responsible for getting {idname}_entity {idname}_id_type {idname}_id_value
+# or via an a set and an asset selector through odrl:target/op:fromSet/op:hasElement
+# :param id_name: name of the variable for the id
+# :param subquery: responsible for getting {idname}_entity {idname}_id_type {idname}_id_value
+# :param policy_type: Offer or Agreement
+#
+# :returns idname_id_bundle: source_id_type#source_id_value
+# :returns ids: |-separated list of ids for an asset
+# :returns policies: |-separated list of policies for an asset
 ASSET_GET_POLICIES_FOR_ASSETS = """
 SELECT ?{idname}_id_bundle  (GROUP_CONCAT(DISTINCT ?entity_entity; separator='|') as ?ids) (GROUP_CONCAT(DISTINCT ?policy; separator='|') as ?policies)
 WHERE
@@ -61,8 +78,9 @@ GROUP BY ?{idname}_id_bundle
 
 # UTILITY
 
-# NOTE: note used in blazegraph when onboarding
-# assets to identify the assets coming from the user.
+# Gets ids for all assets in graph
+# NOTE: Not used in blazegraph. Used when onboarding assets to identify the assets coming from the user.
+# :returns entity_id: Id of Asset
 ASSET_QUERY_ALL_ENTITY_IDS = """
 PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 
@@ -72,7 +90,14 @@ SELECT DISTINCT ?entity_id WHERE
 }
 """
 
+# Gets asset by entity id
 # NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
+# :param idname: name of the variable for the id
+# :param idlist: List of entity ids
+
+# :returns idname_entity: name of the variable for the id value
+# :returns idname_id_value: source id value
+# :returns idname_id_type: source id type
 ASSET_SELECT_BY_ENTITY_ID = """
 SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
     VALUES (?{idname}_id_value) {{
@@ -83,7 +108,14 @@ SELECT ?{idname}_entity ?{idname}_id_value ?{idname}_id_type WHERE {{
 }}
 """
 
+# Gets asset by source id
 # NOTE: this is being used by ASSET_GET_POLICIES_FOR_ASSETS
+# :param idname: name of the variable for the id
+# :param idlist: List of entity ids
+
+# :returns idname_entity: name of the variable for the id value
+# :returns idname_id_value: source id value
+# :returns idname_id_type: source id type
 ASSET_SELECT_BY_SOURCE_ID = """
 SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
     VALUES ( ?{idname}_id_type ?{idname}_id_value) {{
@@ -96,5 +128,5 @@ SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
 """
 
 # Returns the subjects of the triples that are involved in an asset identified by asset_id
-# used by GENERIC_GET
+# used by GENERIC_GET.
 ASSET_STRUCT_SELECT = """ SELECT DISTINCT ?s {{ {id} (op:alsoIdentifiedBy)? ?s . }} """

@@ -8,13 +8,18 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 
-# Used in conjuncting with GENERIC_LIST query
+# Used in conjunction with GENERIC_LIST query.
+# :param id_name: name of the variable for the id
+# :returns title: Title of set
 SET_LIST_EXTRA_IDS = """?title"""
 SET_LIST_EXTRA_QUERY = """
     OPTIONAL {{ ?{id_name} dcterm:title ?title . }}
 """
 
-# Template to create new sets.
+# Template to create new serts
+# :param id: internal set id
+# :param class_: op:Set
+# :param title: Title of set
 SET_TEMPLATE = """
 {id} a {class_} .
 {id} dcterm:title {title} .

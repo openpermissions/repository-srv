@@ -38,8 +38,11 @@ JSON_LD_CONTEXT.update({
 SPARQL_PREFIXES = "\n".join("PREFIX %s: <%s>" % i for i in PREFIXES.items())+"\n"
 TURTLE_PREFIXES = "\n".join("@prefix %s: <%s> ." % i for i in PREFIXES.items())+"\n"
 
-# Returns true if an entity is of a certain class
-# and filters are satisfied
+# Checks whether an entity exists
+# :param id: Id of entity Returns true if an entity is of a certain class
+# :param class: Entity Class Returns true if an entity is of a certain class
+# :param filters: Optional filters to apply to check
+# :returns boolean
 GENERIC_CHECK_EXISTS = """
 ASK  WHERE {{
     hint:Query hint:optimizer "Runtime" .
@@ -50,6 +53,8 @@ ASK  WHERE {{
 }}
 """
 
+# Adds a new timestamp for entity
+# :param entity_id: Id of entity
 GENERIC_INSERT_TIMESTAMPS = """
 INSERT {{
   {entity_id} dcterm:modified ?now .
@@ -59,13 +64,18 @@ WHERE {{
 }}
 """
 
-# return id
-# id_name: name of the variable for the id for use in subqueries !
-# extra_query : additional SPAQL query
-# extra_query_ids : variables that are defined and exported from the addtional capture
-# page_size : number of results to return
-# offset : start index of returned results
-# filters: additional SPARQL filter on the id_name
+# Gets a list of entities
+#
+# :param id_name: name of the variable for the id for use in extra queries
+# :param class: entity class
+# :param extra_query: (optional) SPAQL query to determine extra results
+# :param filter: (optional) SPAQL query to filter id_name
+# :param page_size: number of results to return
+# :param offset: start index of returned results
+
+# :returns id_name: Variable id
+# :returns extra_query_ids : variables that are returned from extra_query
+# :last_modified: Timestamp entity was last modified
 GENERIC_LIST = """
 SELECT ?{id_name} {extra_query_ids} ?last_modified
 WHERE {{
@@ -113,7 +123,13 @@ WHERE {
 }
 """
 
+# Get predicate value for entity
+# :param id: id of entity
+# :param predicate: predicate to get value for
+# :param filter: (optional) SPAQL query to filter
+# :param pagination: (optional) Limit and offset information
 
+# :returns o: Predicate value
 GENERIC_GET_ATTR = """
 SELECT ?o WHERE
 {{
@@ -126,6 +142,13 @@ SELECT ?o WHERE
 """
 
 
+# Determine whether attribute value for entity is true
+# :param id: id of entity
+# :param predicate: predicate
+# :param value: value of predicate
+# :param filter: (optional) SPAQL query to filter
+
+# :returns boolean
 GENERIC_MATCH_ATTR = """
 ASK WHERE
 {{
@@ -136,14 +159,21 @@ ASK WHERE
 }}
 """
 
-
+# Set predicate value for entity
+# :param id: id of entity
+# :param predicate: predicate to set value for
+# :param value: value of predicate
 GENERIC_SET_ATTR = """
    {id} {predicate} {value} .
 """
 
-# %s is the STRUCT_QUERY which is responsible for
-# defining the structure of the subgraph to be matched.
-# it enumerates the subjects that correspond to internal sub-objects.
+# Gets an entity
+# :param id: id of entity
+# :param class: class of entity
+# :param %s: The STRUCT_QUERY which is responsible for defining the structure of the subgraph to be matched.
+#            Subgraph enumerates the subjects that correspond to internal sub-objects.
+#
+# :returns: Entity Triples
 GENERIC_GET = """
 CONSTRUCT {{ ?s ?p ?o }}
 WHERE
