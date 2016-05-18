@@ -135,19 +135,10 @@ def test_create_namespace(_initialise_namespace, load_directory):
     load_directory.assert_called_once_with(INITIAL_DATA, 'foo')
 
 
-@patch('repository.models.framework.db.load_directory', return_value=make_future(None))
-@patch('repository.models.framework.db._initialise_namespace', side_effect=logging.error("error creating namespace"))
-@gen_test
-def test_create_namespace_error_initialise(_initialise_namespace, load_directory):
-    yield create_namespace('foo')
-    _initialise_namespace.assert_called_once_with('foo')
-    assert not load_directory.called
-
-
 @patch('repository.models.framework.db.load_directory', side_effect=HTTPError(400, ""))
 @patch('repository.models.framework.db._initialise_namespace', return_value=make_future(None))
 @gen_test
-def test_create_namespace_error_initialise(_initialise_namespace, load_directory):
+def test_create_namespace_error_initialise_err_code(_initialise_namespace, load_directory):
     with pytest.raises(HTTPError) as exc:
         yield create_namespace('foo')
     assert exc.value.status_code == 400

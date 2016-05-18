@@ -10,16 +10,8 @@
 from __future__ import unicode_literals
 
 import json
-import logging
-import os
-import pytest
 import rdflib
-from functools import partial
-from koi.exceptions import HTTPError
 from koi.test_helpers import make_future, gen_test
-from mock import patch, Mock
-from tornado import httpclient
-from tornado.ioloop import IOLoop
 
 from repository.models.framework.entity import Entity
 from repository.models.framework.helper import solve_ns, future_wrap
@@ -152,4 +144,4 @@ def test_set_get_match_attr():
     # test utf8
     yield e.set_attr(wg, entity_id, "hub:pred1", r'\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3'.decode('utf8'), "xsd:string")
     r = yield e.get_attr(wg, entity_id, "hub:pred1")
-    assert(str(r[0]).decode('utf8'), r'\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3')
+    assert(str(r[0]).decode('utf8') == r'\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3\xe3\x83\x81\xe3\x83\xa7\xe3\x82\xb3')

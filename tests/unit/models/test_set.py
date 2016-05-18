@@ -8,11 +8,10 @@
 # See the License for the specific language governing permissions and limitations under the License.
 
 import rdflib
-from StringIO import StringIO
-from mock import Mock, patch
+from mock import patch
 from koi.test_helpers import make_future, gen_test
 from repository.models.set import Set
-from .util import TEST_NAMESPACE, create_mockdb
+from .util import create_mockdb
 
 
 @gen_test
@@ -36,19 +35,20 @@ def test_set_has_element():
 
 
 @gen_test
-def test_set_set_elements():
+def test_set_get_elements():
     db = create_mockdb()
 
     reply = [(rdflib.Literal(1,),), (rdflib.Literal(2,),), (rdflib.Literal(3,),)]
     db.query.return_value = make_future(reply)
-
-    r = yield Set.get_elements(db, "504504")
+    with patch('repository.models.set.Set._parse_response') as parse_response:
+        parse_response.side_effect = lambda x: x
+        r = yield Set.get_elements(db, "504504")
 
     assert set(r) == set([x[0] for x in reply])
 
 
 @gen_test
-def test_set_set_elements():
+def test_set_set_elements2():
     db = create_mockdb()
     yield Set.set_elements(db, "504504", ["1d0001", "1d0002"])
     assert db.update.call_count == 1
