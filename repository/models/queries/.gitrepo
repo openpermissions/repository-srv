@@ -7,5 +7,5 @@
 	remote = git@github.com:openpermissions/repository-queries.git
 	branch = master
 	commit = cc5c5c00eb1da532e1fe262fd3e057a1abeeb7d5
-	parent = c8f3f96ea78912150dd2e5d3d0cb6a272a0b1b2c
+	parent = ed2431d0d3b6bc2cbd90bfc7f8605fda680c3744
 	cmdver = 0.3.0
