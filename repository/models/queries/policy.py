@@ -27,7 +27,10 @@ SET_HAS_ELEMENT = "op:hasElement"
 ASSETSELECTOR_FROMSET = "op:fromSet"
 ASSETSELECTOR_COUNT = "op:count"
 
-# Used in GENERIC_LIST
+
+# Used in conjunction with GENERIC_LIST query.
+# :param id_name: name of the variable for the id
+# :returns title: Title of offer
 OFFER_LIST_EXTRA_IDS = """?title"""
 OFFER_LIST_EXTRA_QUERY = """
     OPTIONAL {{ ?{id_name} dcterm:title ?title . }}
@@ -64,7 +67,7 @@ POLICY_STRUCT = {
 def struct_to_struct_selector(d, p="", s="?"):
     """
     help function that constructs the sparl path used by the STRUCT query
-    used generic get based on previous description of the policy structure
+    based on previous description of the policy structure
     :param d: data structure
     :param p: path prefix (internal parameter used in recursion)
     :param s: suffix to be added to the path (internal parameter used in recursion)
@@ -81,14 +84,16 @@ def struct_to_struct_selector(d, p="", s="?"):
     return p+"(%s)" % ("|".join(r))+s
 
 
-_POLICY_STRUCT_SPARQLPATH = struct_to_struct_selector(POLICY_STRUCT)
-
-# return the policy and also get the target if is an asset selector as we will want to return this target as part
-# of the policy in this case.
 # Used by GENERIC_GET
+# Returns the policy and also get the target if is an asset selector as we will want to return this target
+# as part of the policy in this case.
+# :params id: id of element belonging to policy
+# :params %s: Policy struct as a SPARQL path (generated from POLICY_STRUCT)
+_POLICY_STRUCT_SPARQLPATH = struct_to_struct_selector(POLICY_STRUCT)
 POLICY_STRUCT_SELECT = """ SELECT DISTINCT ?s {{ {{ {id} %s ?s .  }} UNION {{ {id} (%s)/odrl:target ?s . ?s a op:AssetSelector . }}  }} """ % (_POLICY_STRUCT_SPARQLPATH, _POLICY_STRUCT_SPARQLPATH)
 
-# the two following queries are  used when transforming offers in agreements
+
+# The two following queries are  used when transforming offers in agreements
 # to record how the assignee claim to have satisfy the duty required by the permissions
 # NOTE: this is assuming that there only one duty of each type.
 # NOTE: DUTY_CONSTRAINT_PATH is formated for set_attr to work
@@ -100,12 +105,18 @@ POLICY_METADATA_ATTRIBUTE_MAP = {
 }
 
 
-# Returns a list of directly identified asset or asset selector
-# that the policy refers to
-# The set_id max_items and sel_required are returned only for
-# asset selectors. This is used when transforming an offer into
+# Returns a list of directly identified asset or asset selector that the policy refers to
+# NOTE: set_id, max_items and sel_required are used when transforming an offer into
 # and agreement to understand if the assets referenced by the user
 # are covered by the policy
+#
+# :param id: Id of policy
+#
+# :returns target: asset or asset selector that the policy refers to
+# :returns type: asset or asset selector that the policy refers to
+# :returns set_id: (optional) Id of set if target is asset selector
+# :returns max_items: (optional) Maximum number of items that can be used if target is asset selector
+# :returns sel_required: (optional) Whether selection is required if target is asset selector
 GET_POLICY_TARGETS = """
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
