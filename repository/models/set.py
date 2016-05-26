@@ -7,21 +7,16 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
-
 import uuid
-import datetime
+
+import arrow
 from tornado.gen import coroutine, Return
+
 from .asset import Asset
-from .framework.entity import (Entity, build_sparql_str, build_uuid_reference)
+from .framework.entity import build_sparql_str
 from .queries.generic import TURTLE_PREFIXES
-from .queries.set import (SET_TEMPLATE,
-                          SET_LIST_EXTRA_IDS,
-                          SET_LIST_EXTRA_QUERY
-                          )
-from .queries.policy import (
-    SET_CLASS,
-    SET_HAS_ELEMENT
-)
+from .queries.set import SET_TEMPLATE, SET_LIST_EXTRA_IDS, SET_LIST_EXTRA_QUERY
+from .queries.policy import SET_CLASS, SET_HAS_ELEMENT
 
 
 class Set(Asset):
@@ -33,12 +28,12 @@ class Set(Asset):
     @coroutine
     def new_set(cls, repository, title=None):
         if title is None:
-            title = "new set created on %s" % (datetime.datetime.utcnow().isoformat(),)
+            title = "new set created on %s" % (arrow.utcnow().isoformat(),)
+
         new_id = str(uuid.uuid4()).replace('-', '')
         set_ = SET_TEMPLATE.format(id="id:" + new_id,
                                    class_=cls.CLASS,
-                                   title=build_sparql_str(title)
-                                   )
+                                   title=build_sparql_str(title))
         set_ = TURTLE_PREFIXES + set_
 
         if hasattr(repository, "parse"):

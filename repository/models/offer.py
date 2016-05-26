@@ -12,7 +12,9 @@ import logging
 import rdflib
 import re
 import json
+
 from tornado import gen
+
 from .framework.entity import build_uuid_reference
 from .queries.policy import (
     OFFER_CLASS,
@@ -22,8 +24,7 @@ from .queries.policy import (
     OFFER_LIST_EXTRA_QUERY
 )
 from .queries.generic import (PREFIXES, SPARQL_PREFIXES)
-from .framework.helper import (isoformat, solve_ns, future_wrap,
-                               ValidationException)
+from .framework.helper import solve_ns, future_wrap, ValidationException
 from .policy import Policy
 from .party import Party
 
@@ -75,9 +76,17 @@ class Offer(Policy):
         :param expiry_date: new expiry date
         """
         if not isinstance(expiry_date, basestring):
-            expiry_date = isoformat(expiry_date)
-        logging.info('Setting Offer "{}" to expire at {}'.format(offer_id, expiry_date))
-        yield cls.set_attr(repository, offer_id, OFFER_EXPIRE_PREDICATE, expiry_date, "xsd:dateTime")
+            expiry_date = expiry_date.isoformat()
+
+        logging.info('Setting Offer "{}" to expire at {}'
+                     .format(offer_id, expiry_date))
+
+        yield cls.set_attr(
+            repository,
+            offer_id,
+            OFFER_EXPIRE_PREDICATE,
+            expiry_date,
+            "xsd:dateTime")
 
     @classmethod
     @gen.coroutine

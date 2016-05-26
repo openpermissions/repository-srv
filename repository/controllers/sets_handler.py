@@ -9,8 +9,6 @@
 
 
 """API assets handler. Query offers from the db."""
-
-from datetime import datetime
 from tornado import gen
 
 from koi.base import HTTPError
@@ -19,7 +17,6 @@ from .base import RepoBaseHandler
 from .. import audit
 from ..models.asset import Asset
 from ..models.set import Set
-from ..models.framework.helper import isoformat, date_format
 from ..models.framework.db import DatabaseConnection
 
 

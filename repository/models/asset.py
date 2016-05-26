@@ -36,7 +36,6 @@ from .queries.asset import (ASSET_CLASS,
                             )
 from .queries.generic import *
 from .framework.entity import Entity, build_sparql_str, build_uuid_reference, build_hub_reference, ENTITY_ID_REGEX
-from .framework.helper import isoformat
 
 
 TYPE_MAPPING = {
@@ -249,7 +248,10 @@ def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000
     :param page: query offset
     :param page_size:
     """
-    where = Asset.timerange_constraint("when", from_time=isoformat(from_time), to_time=isoformat(to_time))
+    where = Asset.timerange_constraint(
+        "when",
+        from_time=from_time.isoformat(),
+        to_time=to_time.isoformat())
 
     query_result = yield Asset._retrieve_paged_ids(where, page=page, page_size=page_size, repository=repository)
 

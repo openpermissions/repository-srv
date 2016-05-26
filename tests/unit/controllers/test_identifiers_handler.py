@@ -7,12 +7,11 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+import arrow
 import pytest
 from mock import MagicMock, patch
-
 from koi.test_helpers import make_future
 from koi.exceptions import HTTPError
-from datetime import datetime
 
 from repository.controllers.assets_handler import IdentifiersHandler
 
@@ -29,7 +28,7 @@ def test__get_time_arguments_valid_time(param_name, param_value):
     handler = PartialMockedHandler()
     handler.request.arguments = {param_name: ['2015-01-01T00:00:00']}
     result = handler._get_time_arguments()
-    assert result[param_value] == datetime(2015, 1, 1, 0, 0)
+    assert result[param_value] == arrow.get(2015, 1, 1, 0, 0)
 
 
 @pytest.mark.parametrize('param_name', ['from', 'to'])
@@ -57,8 +56,8 @@ def test__get_time_arguments_time_out_of_range(param_name):
 def test__get_time_arguments_no_time():
     handler = PartialMockedHandler()
     result = handler._get_time_arguments()
-    assert isinstance(result[0], datetime)
-    assert isinstance(result[1], datetime)
+    assert isinstance(result[0], arrow.Arrow)
+    assert isinstance(result[1], arrow.Arrow)
 
 
 @patch('repository.controllers.assets_handler.options')
