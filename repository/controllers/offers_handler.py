@@ -56,7 +56,7 @@ class OfferHandler(RepoBaseHandler):
         except ParserError:
             raise HTTPError(400, "Invalid expires")
 
-        now = arrow.now().isoformat()
+        now = arrow.utcnow().isoformat()
         expired = yield Offer.expired(dbconn, offer_id, now)
         if expired:
             raise HTTPError(400, "Already expired")
