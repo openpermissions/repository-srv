@@ -9,14 +9,14 @@
 
 
 """API assets handler. Query offers from the db."""
-
-from datetime import datetime
+import arrow
+from arrow.parser import ParserError
 from koi.base import HTTPError
 from tornado import gen
+
 from .base import RepoBaseHandler
 from .. import audit
 from ..models.offer import Offer
-from ..models.framework.helper import isoformat, date_format
 from ..models.framework.db import DatabaseConnection
 
 
@@ -52,11 +52,11 @@ class OfferHandler(RepoBaseHandler):
         if isinstance(dbconn, basestring):
             dbconn = DatabaseConnection(dbconn)
         try:
-            datetime.strptime(expires, date_format)
-        except ValueError:
+            arrow.get(expires)
+        except ParserError:
             raise HTTPError(400, "Invalid expires")
 
-        now = isoformat(datetime.utcnow())
+        now = arrow.utcnow().isoformat()
         expired = yield Offer.expired(dbconn, offer_id, now)
         if expired:
             raise HTTPError(400, "Already expired")

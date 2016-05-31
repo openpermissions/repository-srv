@@ -11,8 +11,9 @@
 API assets handler. Stores data in database.
 """
 import logging
-import datetime
-from dateutil import parser as dateutil_parser
+
+import arrow
+from arrow.parser import ParserError
 from koi.exceptions import HTTPError
 from tornado import gen
 from tornado.options import options
@@ -25,7 +26,7 @@ from ..models import asset
 from ..models.offer import Offer
 from ..models.framework import helper
 from ..models.framework.db import DatabaseConnection
-from ..models.framework.helper import isoformat
+
 
 def _validate_body(request):
     if request.body is None:
@@ -55,20 +56,20 @@ class IdentifiersHandler(RepoBaseHandler):
         to_time = self.get_argument('to', None)
 
         # parse the value or get default value if parameter not specified
-        now = datetime.datetime.utcnow()  # todo: why is the in the handler?
+        now = arrow.utcnow()  # todo: why is the in the handler?
         try:
             if from_time is None:
-                from_time = (now - datetime.timedelta(days=1))
+                from_time = now.replace(days=-1)
             else:
-                from_time = dateutil_parser.parse(from_time)
+                from_time = arrow.get(from_time)
 
             if to_time is None:
                 to_time = now
             else:
-                to_time = dateutil_parser.parse(to_time)
-        except ValueError:
+                to_time = arrow.get(to_time)
+        except ParserError:
             raise HTTPError(400, "Invalid format")
-        except OverflowError:
+        except (OverflowError, ValueError):
             raise HTTPError(400, "Date out of range")
 
         return from_time, to_time
@@ -114,10 +115,12 @@ class IdentifiersHandler(RepoBaseHandler):
 
         # fetch the identifiers
         try:
-            ids, result_range = yield asset.retrieve_paged_assets(DatabaseConnection(repository_id), from_time, to_time,
-                                                                  page=page,
-                                                                  page_size=page_size
-                                                                  )
+            ids, result_range = yield asset.retrieve_paged_assets(
+                DatabaseConnection(repository_id),
+                from_time,
+                to_time,
+                page=page,
+                page_size=page_size)
         except Exception:
             status = 500
             logging.exception("Error while retrieving ids from database")
@@ -128,7 +131,7 @@ class IdentifiersHandler(RepoBaseHandler):
             'metadata': {
                 'service_id': options.service_id,
                 'result_range': result_range,
-                'query_range': (isoformat(from_time), isoformat(to_time)),
+                'query_range': (from_time.isoformat(), to_time.isoformat()),
             }
         }
 

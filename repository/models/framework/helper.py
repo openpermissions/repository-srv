@@ -17,16 +17,6 @@ from koi.test_helpers import make_future
 
 from ..queries.generic import PREFIXES, JSON_LD_CONTEXT
 
-date_format = "%Y-%m-%dT%H:%M:%SZ"
-
-
-def isoformat(d):
-    """
-    :param d: a date
-    :return: Returns valid iso8601 with timezone dateformat for linked data
-    """
-    return d.strftime(date_format)
-
 
 def future_wrap(x):
     """

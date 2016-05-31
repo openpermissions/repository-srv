@@ -6,15 +6,12 @@
 # Unless required by applicable law or agreed to in writing, software distributed under the License is
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
-
-
-import datetime
 import logging
 import rdflib
 
+import arrow
 from tornado.gen import Return, coroutine
 
-from .framework.helper import isoformat
 from .framework.helper import future_wrap, solve_ns, ValidationException
 from .queries.generic import SPARQL_PREFIXES
 from .queries.policy import AGREEMENT_CLASS, POLICY_TARGET, POLICY_ASSIGNEE
@@ -60,9 +57,13 @@ class Agreement(Policy):
 
         #  set agreement date
 
-        yield cls.set_attr(future_wrap(ng), agreement_id, "dcterm:dateAccepted",
-                           isoformat(datetime.datetime.utcnow()), "xsd:dateTime", update_last_modified=True)
-
+        yield cls.set_attr(
+            future_wrap(ng),
+            agreement_id,
+            "dcterm:dateAccepted",
+            arrow.utcnow().isoformat(),
+            "xsd:dateTime",
+            update_last_modified=True)
 
         # link agreement to offer
         ng.add((agreement_id, solve_ns("dcterm:references"), solve_ns(cls.normalise_id(offer_id))))
