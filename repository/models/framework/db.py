@@ -33,7 +33,7 @@ NAMESPACE_ASSET = """
 </properties>
 """
 
-INITIAL_DATA = os.path.join(os.path.dirname(__file__), '../../initial_data')
+INITIAL_DATA = os.path.join(os.path.dirname(__file__), '../../../initial_data')
 
 
 @coroutine
