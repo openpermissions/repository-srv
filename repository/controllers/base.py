@@ -26,8 +26,9 @@ from chub import API
 
 
 class RepoBaseHandler(BaseHandler):
-    client_organisation = None
-    on_behalf_of = None
+    token = None
+    organisation_id = None
+
     CONTENT_TYPE_MAP = {
         'application/xml': 'xml',
         'text/rdf+n3': 'turtle',
@@ -35,6 +36,32 @@ class RepoBaseHandler(BaseHandler):
     }
     ALLOWED_CONTENT_TYPES = CONTENT_TYPE_MAP.keys()
     DEFAULT_CONTENT_TYPE = 'application/xml'
+
+    @coroutine
+    def get_organisation_id(self, repository_id):
+        """
+        Lookup organisation id of repository
+
+        :param repository_id: id of repository being accessed
+        :returns: organisation_id string
+        """
+        client = API(options.url_accounts,
+                     ssl_options=ssl_server_options())
+        headers = {'Accept': 'application/json'}
+        client.accounts.repositories[repository_id].prepare_request(headers=headers, request_timeout=180)
+
+        try:
+            result = yield client.accounts.repositories[repository_id].get()
+        except tornado.httpclient.HTTPError as ex:
+            # Must be converted to a tornado.web.HTTPError for the server
+            # to handle it correctly
+            logging.exception(ex.message)
+            if ex.code == 404:
+                raise HTTPError(404, ex.message)
+            else:
+                raise HTTPError(500, 'Internal Server Error')
+
+        raise Return(result['data']['organisation']['id'])
 
     def send_error(self, status_code=500, **kwargs):
         """
@@ -93,10 +120,15 @@ class RepoBaseHandler(BaseHandler):
 
         :raise: HTTPError if token does not have access
         """
+        # We do not need to do anything for CORS pre-flight checks
+        if self.request.method == 'OPTIONS':
+            return
+
         repository_id = self.path_kwargs.get('repository_id')
 
         requested_access = self.endpoint_access(self.request.method)
         use_oauth = getattr(options, 'use_oauth', None)
+
         if use_oauth and requested_access is not self.UNAUTHENTICATED_ACCESS:
             token = self.request.headers.get('Authorization', '').split(' ')[-1]
             if token:
@@ -104,12 +136,13 @@ class RepoBaseHandler(BaseHandler):
                 if not has_access:
                     msg = "'{}' access not granted.".format(requested_access)
                     raise HTTPError(403, msg)
-                decoded_token = jwt.decode(token, verify=False)
-                self.client_organisation = decoded_token['sub']
-                self.on_behalf_of = decoded_token['client']['id']
+                self.token = jwt.decode(token, verify=False)
             else:
                 msg = 'OAuth token not provided'
                 raise HTTPError(401, msg)
+
+        if repository_id:
+            self.organisation_id = yield self.get_organisation_id(repository_id)
 
     def get_content_type(self):
         """

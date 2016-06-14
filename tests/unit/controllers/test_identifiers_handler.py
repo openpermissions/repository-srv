@@ -20,7 +20,6 @@ class PartialMockedHandler(IdentifiersHandler):
     def __init__(self):
         super(PartialMockedHandler, self).__init__(application=MagicMock(), request=MagicMock())
         self.finish = MagicMock()
-        self.client_organisation = 'foo'
 
 
 @pytest.mark.parametrize('param_name, param_value', [('from', 0), ('to', 1)])

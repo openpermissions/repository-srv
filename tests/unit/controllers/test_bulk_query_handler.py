@@ -18,7 +18,6 @@ class PartialMockedHandler(BulkOfferHandler):
     def __init__(self):
         super(PartialMockedHandler, self).__init__(application=MagicMock(), request=MagicMock())
         self.finish = MagicMock()
-        self.client_organisation = 'testco'
 
 
 @patch('repository.controllers.assets_handler.Offer')

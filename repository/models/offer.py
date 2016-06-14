@@ -90,12 +90,13 @@ class Offer(Policy):
 
     @classmethod
     @gen.coroutine
-    def new_offer(cls, repository, offer, format="xml", organisation_id=None, on_behalf_of=None):
+    def new_offer(cls, repository, offer, assigner, format="xml"):
         """
         Create a new offer.
 
         :param repository: The database where we read the offer and create the agreement in
         :param offer: the text of the offer
+        :param assigner: the assigner of the offer
         :param format: serialisation format of the offer
         """
         kwargs = {}
@@ -127,8 +128,8 @@ class Offer(Policy):
         offer_id = results[0][0]
 
         # set assigner
-        party_id = yield Party.new_party(future_wrap(ng), organisation_id, on_behalf_of)
-        yield cls.set_attr(future_wrap(ng), offer_id, POLICY_ASSIGNER,  solve_ns(Party.normalise_id(party_id)))
+        party = yield Party.new_party(future_wrap(ng), assigner)
+        yield cls.set_attr(future_wrap(ng), offer_id, POLICY_ASSIGNER,  solve_ns(Party.normalise_id(party)))
 
         rdfxml = ng.serialize()
         yield cls.store(repository, rdfxml)

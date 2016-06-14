@@ -28,6 +28,46 @@ class PartialMockedHandler(RepoBaseHandler):
         self.path_kwargs = {'repository_id': 'repo1'}
 
 
+@patch('repository.controllers.base.API')
+@gen_test
+def test_get_organisation_id(API):
+    client = API().accounts.repositories['repo1']
+    client.get.return_value = make_future({'status': 200, 'data': {'id': 'repo1', 'organisation': {'id': 'org1'}}})
+
+    handler = PartialMockedHandler()
+    result = yield handler.get_organisation_id('repo1')
+
+    headers = {'Accept': 'application/json'}
+
+    client.prepare_request.assert_called_with(
+        request_timeout=180,
+        headers=headers
+    )
+    assert client.get.call_count == 1
+    assert result == 'org1'
+
+
+@patch('repository.controllers.base.API')
+@gen_test
+def test_get_organisation_id_http_error(API):
+    client = API().accounts.repositories['repo1']
+    client.get.side_effect = tornado.httpclient.HTTPError(403, 'errormsg')
+
+    handler = PartialMockedHandler()
+
+    with pytest.raises(HTTPError) as exc:
+        yield handler.get_organisation_id('repo1')
+
+    headers = {'Accept': 'application/json'}
+
+    client.prepare_request.assert_called_with(
+        request_timeout=180,
+        headers=headers
+    )
+    assert client.get.call_count == 1
+    assert exc.value.status_code == 500
+
+
 @patch('repository.controllers.base.options')
 @patch('repository.controllers.base.API')
 @gen_test
@@ -142,10 +182,11 @@ def test_verify_repository_token_http_error(API, options):
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @patch('repository.controllers.base.jwt')
 @gen_test
-def test_prepare_no_repository_id(jwt, verify_repository_token, options):
+def test_prepare_no_repository_id(jwt, verify_repository_token, get_organisation_id, options):
     jwt.decode.return_value = {
         "client": {
             "service_type": "external",
@@ -154,6 +195,7 @@ def test_prepare_no_repository_id(jwt, verify_repository_token, options):
         },
         "sub": "client1"
     }
+
     verify_repository_token.return_value = make_future(True)
 
     options.use_oauth = True
@@ -164,15 +206,23 @@ def test_prepare_no_repository_id(jwt, verify_repository_token, options):
     yield handler.prepare()
 
     verify_repository_token.assert_called_once_with('token1234', 'r', None)
-    assert handler.client_organisation == 'client1'
-    assert handler.on_behalf_of == 'client3'
+    assert not get_organisation_id.called
+    assert handler.token == {
+        "client": {
+            "service_type": "external",
+            "organisation_id": "developerco",
+            "id": "client3"
+        },
+        "sub": "client1"
+    }
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @patch('repository.controllers.base.jwt')
 @gen_test
-def test_prepare_oauth_required_valid(jwt, verify_repository_token, options):
+def test_prepare_oauth_required_valid(jwt, verify_repository_token, get_organisation_id, options):
     jwt.decode.return_value = {
         "client": {
             "service_type": "external",
@@ -183,6 +233,7 @@ def test_prepare_oauth_required_valid(jwt, verify_repository_token, options):
     }
 
     verify_repository_token.return_value = make_future(True)
+    get_organisation_id.return_value = make_future('org1')
     options.use_oauth = True
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'Bearer token1234'}
@@ -190,15 +241,23 @@ def test_prepare_oauth_required_valid(jwt, verify_repository_token, options):
     yield handler.prepare()
 
     verify_repository_token.assert_called_once_with('token1234', 'r', 'repo1')
-    assert handler.client_organisation == 'client1'
-    assert handler.on_behalf_of == 'client3'
+    get_organisation_id.assert_called_once_with('repo1')
+    assert handler.token == {
+        "client": {
+            "service_type": "external",
+            "organisation_id": "developerco",
+            "id": "client3"
+        },
+        "sub": "client1"
+    }
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @patch('repository.controllers.base.jwt')
 @gen_test
-def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, options):
+def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, get_organisation_id, options):
     jwt.decode.return_value = {
         "client": {
             "service_type": "external",
@@ -208,6 +267,7 @@ def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, opt
         "sub": "client1"
     }
     verify_repository_token.return_value = make_future(True)
+    get_organisation_id.return_value = make_future('org1')
     options.use_oauth = True
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'token1234'}
@@ -215,14 +275,22 @@ def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, opt
     yield handler.prepare()
 
     verify_repository_token.assert_called_once_with('token1234', 'r', 'repo1')
-    assert handler.client_organisation == 'client1'
-    assert handler.on_behalf_of == 'client3'
+    get_organisation_id.assert_called_once_with('repo1')
+    assert handler.token == {
+        "client": {
+            "service_type": "external",
+            "organisation_id": "developerco",
+            "id": "client3"
+        },
+        "sub": "client1"
+    }
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
-def test_prepare_oauth_required_invalid(verify_repository_token, options):
+def test_prepare_oauth_required_invalid(verify_repository_token, get_organisation_id, options):
     verify_repository_token.return_value = make_future(False)
     options.use_oauth = True
     handler = PartialMockedHandler()
@@ -232,13 +300,15 @@ def test_prepare_oauth_required_invalid(verify_repository_token, options):
         yield handler.prepare()
 
     verify_repository_token.assert_called_once_with('token1234', 'r', 'repo1')
+    assert not get_organisation_id.called
     assert exc.value.status_code == 403
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
-def test_prepare_oauth_required_missing_header(verify_repository_token, options):
+def test_prepare_oauth_required_missing_header(verify_repository_token, get_organisation_id, options):
     options.use_oauth = True
     handler = PartialMockedHandler()
     handler.request.headers = {}
@@ -247,38 +317,43 @@ def test_prepare_oauth_required_missing_header(verify_repository_token, options)
         yield handler.prepare()
 
     assert not verify_repository_token.called
+    assert not get_organisation_id.called
     assert exc.value.status_code == 401
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
-def test_prepare_oauth_required_unauthenticated_endpoint(verify_repository_token, options):
+def test_prepare_oauth_required_unauthenticated_endpoint(verify_repository_token, get_organisation_id, options):
     options.use_oauth = True
     handler = PartialMockedHandler()
     handler.METHOD_ACCESS = {
         'GET': handler.UNAUTHENTICATED_ACCESS
     }
+    get_organisation_id.return_value = make_future('org1')
 
     yield handler.prepare()
 
     assert not verify_repository_token.called
-    assert handler.client_organisation is None
-    assert handler.client_organisation is None
+    get_organisation_id.assert_called_once_with('repo1')
+    assert handler.token is None
 
 
 @patch('repository.controllers.base.options')
+@patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
-def test_prepare_oauth_not_required(verify_repository_token, options):
+def test_prepare_oauth_not_required(verify_repository_token, get_organisation_id, options):
     options.use_oauth = False
     handler = PartialMockedHandler()
+    get_organisation_id.return_value = make_future('org1')
 
     yield handler.prepare()
 
     assert not verify_repository_token.called
-    assert handler.client_organisation is None
-    assert handler.client_organisation is None
+    get_organisation_id.assert_called_once_with('repo1')
+    assert handler.token is None
 
 
 @pytest.mark.parametrize('content_type', RepoBaseHandler.ALLOWED_CONTENT_TYPES)

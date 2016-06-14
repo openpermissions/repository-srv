@@ -26,26 +26,36 @@ def configure_logging():
     logger.addHandler(handler)
 
 
-def log(organisation_id, msg, *args, **kwargs):
-    level = kwargs.pop("level", "info")
-    getattr(logger, level)(msg, *args, **kwargs)
+def log_added_set(token, set_id):
+    """
+    Log set added to the repository
+
+    :param token: JWT access token used to make request
+    :param set_id: the id of the set added
+    """
+    logger.info(u'Service {service} added set {set_id}'.format(
+        service=token['sub'],
+        set_id=set_id))
 
 
-def log_added_assets(organisation_id, assets, repository_id=None, on_behalf_of=None):
+def log_added_assets(token, assets, repository_id=None):
     """
     Log assets added to the repository
 
-    :param organisation_id: the client's organisation ID
+    :param token: JWT access token used to make request
     :param assets: the data stored in the repository
     :param repository_id: the repository ID
     """
-    if on_behalf_of and on_behalf_of != organisation_id:
-        on_behalf_of = '(on behalf of {}) '.format(on_behalf_of)
+    service = token['sub']
+    original_service = token['client']['id']
+
+    if original_service and original_service != service:
+        on_behalf_of = '(on behalf of Service {}) '.format(original_service)
     else:
         on_behalf_of = ''
 
-    msg = '{organisation_id} {on_behalf_of}added {count} assets'.format(
-        organisation_id=organisation_id,
+    msg = 'Service {service} {on_behalf_of}added {count} assets'.format(
+        service=service,
         count=len(assets),
         on_behalf_of=on_behalf_of)
 
@@ -55,25 +65,28 @@ def log_added_assets(organisation_id, assets, repository_id=None, on_behalf_of=N
     logger.info(msg)
 
 
-def log_asset_ids(organisation_id, entity_id, ids):
+def log_asset_ids(token, entity_id, ids):
     def _to_unicode(i):
         return u'({})'.format(u', '.join(map(unicode, i.values())))
 
-    logger.info(u'{} added asset IDs to {}: [\n\t{}\n]'.format(
-        organisation_id,
+
+    logger.info(u'Service {} added asset IDs to {}: [\n\t{}\n]'.format(
+        token['sub'],
         entity_id,
         u'\n\t'.join([_to_unicode(i) for i in ids])
     ))
 
 
-def log_added_offer(organisation_id, offer_id):
-    logger.info(u'{} added offer {}'.format(organisation_id, offer_id))
+def log_added_offer(token, offer_id):
+    logger.info(u'Service {service} added offer {offer_id}'.format(
+        service=token['sub'],
+        offer_id=offer_id))
 
 
-def log_update_offer_expiry(organisation_id, offer_id, expires):
-    logger.info(u'{organisation_id} updated offer '
+def log_update_offer_expiry(token, offer_id, expires):
+    logger.info(u'Service {service} updated offer '
                 '{offer_id} to expire at {expires}'.format(
-                    organisation_id=organisation_id,
+                    service=token['sub'],
                     offer_id=offer_id,
                     expires=expires
                 ))

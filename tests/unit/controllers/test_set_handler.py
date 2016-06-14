@@ -23,7 +23,7 @@ def PartialMockedHandler(handler):
         def __init__(self):
             super(PartialMocked, self).__init__(application=MagicMock(), request=MagicMock())
             self.finish = MagicMock()
-            self.client_organisation = 'client1'
+            self.token = {"client": {"id": "client3"}, "sub": "client1"}
             self.request.headers = {}
 
     return PartialMocked()
@@ -45,7 +45,7 @@ def test_sets_handler_post(DatabaseConnection, Set, audit):
     Set.new_set.return_value = make_future(set_id)
     yield handler.post(TEST_NAMESPACE)
 
-    assert (audit.log.call_count == 1)
+    assert (audit.log_added_set.call_count == 1)
     assert (Set.new_set.call_count == 1)
     handler.finish.assert_called_once_with({'status': 200, 'data': {'id': set_id}})
 

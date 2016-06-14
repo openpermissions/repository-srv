@@ -44,7 +44,7 @@ class SetsHandler(RepoBaseHandler):
 
         title = self.get_argument('title', None)
         set_id = yield Set.new_set(DatabaseConnection(repository_id), title=title)
-        audit.log(self.client_organisation, "Set created %s" % (set_id,))
+        audit.log_added_set(self.token, set_id)
         self.set_header('Content-Type', 'application/json; charset=UTF-8')
         self.finish({'status': 200, 'data': {'id': set_id}})
 

@@ -26,12 +26,13 @@ class Agreement(Policy):
 
     @classmethod
     @coroutine
-    def new_agreement(cls, repository, offer_id,  asset_ids=None,
-                      metadata=None, organisation_id=None, on_behalf_of=None):
+    def new_agreement(cls, repository, party_id, offer_id,  asset_ids=None,
+                      metadata=None):
         """
         Create an agreement for a specified offer.
 
         :param repository: The database where we read the offer and create the agreement in
+        :param party_id: The id of the assignee
         :param offer_id: The offer id that is to be transformed into an agreement
         :param asset_ids: The list of assets the person wants to accept in the offer
         :param metadata: Other metadata indicating the value of the constraints
@@ -81,8 +82,8 @@ class Agreement(Policy):
             yield cls.update_metadata(future_wrap(ng), agreement_id, metadata, update_last_modified=False)
 
         # set assignee
-        party_id = yield Party.new_party(future_wrap(ng), organisation_id, on_behalf_of)
-        ng.add((agreement_id, solve_ns(POLICY_ASSIGNEE), solve_ns(Party.normalise_id(party_id))))
+        party = yield Party.new_party(future_wrap(ng), party_id)
+        ng.add((agreement_id, solve_ns(POLICY_ASSIGNEE), solve_ns(Party.normalise_id(party))))
 
         # write agreement
         yield repository.store(ng.serialize(format="xml"), content_type="application/xml")

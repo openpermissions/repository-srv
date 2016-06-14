@@ -76,7 +76,7 @@ class OfferHandler(RepoBaseHandler):
         repository = DatabaseConnection(repository_id)
         yield self._validate_offer_expiry(repository, offer_id, expires)
         yield Offer.expire(repository, offer_id, expires)
-        audit.log_update_offer_expiry(self.client_organisation, offer_id, expires)
+        audit.log_update_offer_expiry(self.token, offer_id, expires)
 
         self.set_header('Content-Type', 'application/json; charset=UTF-8')
         self.finish({'status': 200, 'data': {'id': offer_id, 'expires': expires}})
@@ -108,14 +108,13 @@ class OffersHandler(RepoBaseHandler):
         offer_id = yield Offer.new_offer(
             DatabaseConnection(repository_id),
             self.request.body,
-            format=self.data_format(),
-            organisation_id=self.on_behalf_of,
-            on_behalf_of="")
+            assigner=self.organisation_id,
+            format=self.data_format())
 
         errors = []
         if errors:
             raise HTTPError(400, errors)
         else:
-            audit.log_added_offer(self.client_organisation, offer_id)
+            audit.log_added_offer(self.token, offer_id)
             self.set_header('Content-Type', 'application/json; charset=UTF-8')
             self.finish({'status': 200, 'data': {'id': offer_id}})
