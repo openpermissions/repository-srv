@@ -37,7 +37,7 @@ def test_assets_handler_post(assets, audit):
     handler.request.body = '{"ids": ["id1"]}'
     handler.post(TEST_NAMESPACE, 'asset1').result()
 
-    audit.log_asset_ids.assert_called_once_with({'sub': 'client1'}, 'asset1', ['id1'])
+    audit.log_asset_ids.assert_called_once_with('asset1', ['id1'], {'sub': 'client1'})
     assert assets.add_ids.call_count == 1
     handler.finish.assert_called_once_with({"status": 200})
 

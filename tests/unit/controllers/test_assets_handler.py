@@ -77,8 +77,8 @@ def test_repository_assets_handler_post(assets, audit, helper, _validate_body):
 
     assert assets.store.call_count == 1
     audit.log_added_assets.assert_called_once_with(
-        {'sub': 'client1', 'client': {'id': 'testco'}},
         'asset data',
+        {'sub': 'client1', 'client': {'id': 'testco'}},
         repository_id='c8ab01')
     handler.finish.assert_called_once_with({"status": 200})
 
