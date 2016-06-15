@@ -37,15 +37,14 @@ class Party(Entity):
 
     @classmethod
     @coroutine
-    def new_party(cls, repository, provider, reference):
+    def new_party(cls, repository, provider):
         """
         Instantiate a party with following attributes
         """
         new_id = str(uuid.uuid4()).replace('-', '')
         party = PARTY_TEMPLATE.format(id="id:"+new_id,
                                       class_=cls.CLASS,
-                                      provider=build_sparql_str(provider),
-                                      reference=build_sparql_str(reference)
+                                      provider=build_sparql_str(provider)
                                       )
         party=TURTLE_PREFIXES + party
         if hasattr(repository, "parse"):

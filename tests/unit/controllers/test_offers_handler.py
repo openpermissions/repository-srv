@@ -61,7 +61,7 @@ class PartialMockedOfferHandler(offers_handler.OfferHandler):
     def __init__(self):
         super(PartialMockedOfferHandler, self).__init__(application=MagicMock(), request=MagicMock())
         self.finish = MagicMock()
-        self.client_organisation = 'client1'
+        self.token ={"client": { "id": "client3"}, "sub": "client1"}
         self.request.headers = {}
 
 
@@ -69,7 +69,7 @@ class PartialMockedOffersHandler(offers_handler.OffersHandler):
     def __init__(self):
         super(PartialMockedOffersHandler, self).__init__(application=MagicMock(), request=MagicMock())
         self.finish = MagicMock()
-        self.client_organisation = 'client1'
+        self.token = {"client": {"id": "client3"}, "sub": "client1"}
         self.request.headers = {}
 
 
@@ -107,7 +107,7 @@ def test_offers_handler_put(DatabaseConnection, _validate_offer_expiry, offer, a
     handler.put(TEST_NAMESPACE, "0ffe31").result()
 
     offer.expire.assert_called_once_with(TEST_NAMESPACE, '0ffe31', '1999-12-31T23:59:59Z')
-    audit.log_update_offer_expiry.assert_called_with('client1', '0ffe31', '1999-12-31T23:59:59Z')
+    audit.log_update_offer_expiry.assert_called_with('0ffe31', '1999-12-31T23:59:59Z',{"client": { "id": "client3"}, "sub": "client1"})
     handler.finish.assert_called_once_with({'status': 200, 'data': {'id': '0ffe31', 'expires': '1999-12-31T23:59:59Z'}})
 
 
@@ -115,6 +115,7 @@ def test_offers_handler_put(DatabaseConnection, _validate_offer_expiry, offer, a
 @patch("repository.controllers.offers_handler.Offer")
 @patch("repository.controllers.offers_handler.DatabaseConnection", return_value=TEST_NAMESPACE)
 def test_offers_handler_post(DatabaseConnection, offer, audit):
+    # TODO
     offer.new_offer.return_value = make_future('0ffe31')
 
     handler = PartialMockedOffersHandler()
@@ -125,5 +126,5 @@ def test_offers_handler_post(DatabaseConnection, offer, audit):
 
     assert not offer.update.called
     assert offer.new_offer.call_count == 1
-    audit.log_added_offer.assert_called_once_with('client1', '0ffe31')
+    audit.log_added_offer.assert_called_once_with('0ffe31', {"client": { "id": "client3"}, "sub": "client1"})
     handler.finish.assert_called_once_with({'status': 200, 'data': {'id': '0ffe31'}})

@@ -11,10 +11,8 @@
 # Template to create a party
 # :param id - internal party id
 # :param class_ - op:Party
-# :param provider - Organisation that provides the reference
-# :param reference (optional) - id used by the organisation to identify the party if present (default: provider)
+# :param provider - Id referencing an organisation in the accounts service
 PARTY_TEMPLATE = """
  {id} a {class_} .
  {id} op:provider {provider} .
- {id} op:reference {reference} .
 """

@@ -31,8 +31,7 @@ class PartialMockedHandler(AssetsHandler):
         super(PartialMockedHandler, self).__init__(application=MagicMock(),
                                                    request=MagicMock())
         self.finish = MagicMock()
-        self.client_organisation = 'client1'
-        self.on_behalf_of = 'testco'
+        self.token = {'sub': 'client1', 'client': {'id': 'testco'}}
         self.request.headers = {}
 
         if content_type:
@@ -77,7 +76,10 @@ def test_repository_assets_handler_post(assets, audit, helper, _validate_body):
     yield handler.post(TEST_NAMESPACE)
 
     assert assets.store.call_count == 1
-    audit.log_added_assets.assert_called_once_with('client1', 'asset data', on_behalf_of='testco', repository_id='c8ab01')
+    audit.log_added_assets.assert_called_once_with(
+        'asset data',
+        {'sub': 'client1', 'client': {'id': 'testco'}},
+        repository_id='c8ab01')
     handler.finish.assert_called_once_with({"status": 200})
 
 

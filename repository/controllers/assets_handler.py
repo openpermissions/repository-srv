@@ -173,10 +173,9 @@ class AssetsHandler(RepoBaseHandler):
             self.get_content_type())
 
         audit.log_added_assets(
-            self.client_organisation,
             assets_data,
-            repository_id=repository_id,
-            on_behalf_of=self.on_behalf_of)
+            self.token,
+            repository_id=repository_id)
 
         self.finish({'status': 200})
 
@@ -219,7 +218,7 @@ class AssetIDHandler(RepoBaseHandler):
         if len(errors) > 0:
             raise HTTPError(400, errors)
         else:
-            audit.log_asset_ids(self.client_organisation, entity_id, data['ids'])
+            audit.log_asset_ids(entity_id, data['ids'], self.token)
             self.finish({'status': 200})
 
     @gen.coroutine

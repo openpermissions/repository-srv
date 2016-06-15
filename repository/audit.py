@@ -26,28 +26,44 @@ def configure_logging():
     logger.addHandler(handler)
 
 
-def log(organisation_id, msg, *args, **kwargs):
-    level = kwargs.pop("level", "info")
-    getattr(logger, level)(msg, *args, **kwargs)
+def log_added_set(set_id, token=None):
+    """
+    Log set added to the repository
+
+    :param set_id: the id of the set added
+    :param token: JWT access token used to make request
+
+    """
+    if token:
+        msg = u'Service {service} added set {set_id}'.format(service=token['sub'], set_id=set_id)
+    else:
+        msg = u'Set {set_id} added'.format(set_id=set_id)
+    logger.info(msg)
 
 
-def log_added_assets(organisation_id, assets, repository_id=None, on_behalf_of=None):
+def log_added_assets(assets, token=None, repository_id=None):
     """
     Log assets added to the repository
 
-    :param organisation_id: the client's organisation ID
     :param assets: the data stored in the repository
+    :param token: JWT access token used to make request
     :param repository_id: the repository ID
     """
-    if on_behalf_of and on_behalf_of != organisation_id:
-        on_behalf_of = '(on behalf of {}) '.format(on_behalf_of)
-    else:
-        on_behalf_of = ''
+    if token:
+        service = token['sub']
+        original_service = token['client']['id']
 
-    msg = '{organisation_id} {on_behalf_of}added {count} assets'.format(
-        organisation_id=organisation_id,
-        count=len(assets),
-        on_behalf_of=on_behalf_of)
+        if original_service and original_service != service:
+            on_behalf_of = '(on behalf of Service {}) '.format(original_service)
+        else:
+            on_behalf_of = ''
+
+        msg = 'Service {service} {on_behalf_of}added {count} assets'.format(
+            service=service,
+            count=len(assets),
+            on_behalf_of=on_behalf_of)
+    else:
+        msg = '{count} assets added'
 
     if repository_id:
         msg += ' to repository {repository_id}'.format(repository_id=repository_id)
@@ -55,25 +71,46 @@ def log_added_assets(organisation_id, assets, repository_id=None, on_behalf_of=N
     logger.info(msg)
 
 
-def log_asset_ids(organisation_id, entity_id, ids):
+def log_asset_ids(entity_id, ids, token=None):
     def _to_unicode(i):
         return u'({})'.format(u', '.join(map(unicode, i.values())))
 
-    logger.info(u'{} added asset IDs to {}: [\n\t{}\n]'.format(
-        organisation_id,
-        entity_id,
-        u'\n\t'.join([_to_unicode(i) for i in ids])
-    ))
+    if token:
+        msg = u'Service {} added asset IDs to {}: [\n\t{}\n]'.format(
+            token['sub'],
+            entity_id,
+            u'\n\t'.join([_to_unicode(i) for i in ids])
+        )
+    else:
+        msg = u'Asset IDs added to {}: [\n\t{}\n]'.format(
+            entity_id,
+            u'\n\t'.join([_to_unicode(i) for i in ids])
+        )
+    logger.info(msg)
 
 
-def log_added_offer(organisation_id, offer_id):
-    logger.info(u'{} added offer {}'.format(organisation_id, offer_id))
+def log_added_offer(offer_id, token=None):
+    if token:
+        msg = u'Service {service} added offer {offer_id}'.format(
+                    service=token['sub'],
+                    offer_id=offer_id
+                )
+    else:
+        msg = u'Offer {offer_id} added'.format(offer_id=offer_id)
+    logger.info(msg)
 
 
-def log_update_offer_expiry(organisation_id, offer_id, expires):
-    logger.info(u'{organisation_id} updated offer '
-                '{offer_id} to expire at {expires}'.format(
-                    organisation_id=organisation_id,
+def log_update_offer_expiry(offer_id, expires, token=None):
+    if token:
+        msg = u'Service {service} updated offer {offer_id} to expire at {expires}'.format(
+                    service=token['sub'],
                     offer_id=offer_id,
                     expires=expires
-                ))
+                )
+    else:
+        msg = u'Offer {offer_id} updated to expire at {expires}'.format(
+                    offer_id=offer_id,
+                    expires=expires
+                )
+
+    logger.info(msg)

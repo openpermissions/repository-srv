@@ -44,11 +44,10 @@ class AgreementsHandler(RepoBaseHandler):
 
         agreement_id, assets_covered = yield Agreement.new_agreement(
             DatabaseConnection(repository_id),
+            party_id,
             offer_id,
             asset_ids,
-            metadata=metadata,
-            organisation_id=self.on_behalf_of,
-            on_behalf_of=party_id)
+            metadata=metadata)
 
         self.set_header('Content-Type', 'application/json; charset=UTF-8')
         self.finish({'status': 200, 'data': {'id': agreement_id, "assets": assets_covered}})

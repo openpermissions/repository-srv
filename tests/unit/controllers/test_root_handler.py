@@ -17,7 +17,6 @@ class PartialMockedHandler(RootHandler):
     def __init__(self):
         super(PartialMockedHandler, self).__init__(application=MagicMock(), request=MagicMock(), version=__version__)
         self.finish = MagicMock()
-        self.client_organisation = 'foo'
 
 
 @patch('repository.controllers.root_handler.options')
