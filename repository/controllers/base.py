@@ -14,7 +14,7 @@ from urllib import urlencode
 
 import tornado.httpclient
 from tornado.gen import coroutine, Return
-from tornado.options import options
+from tornado.options import options, define
 
 from koi.exceptions import HTTPError
 from koi.base import BaseHandler
@@ -24,6 +24,7 @@ from repository.models.framework.helper import PermissionException, ValidationEx
 
 from chub import API
 
+define("standalone", help='Run service in standalone mode', default=False, type=bool)
 
 class RepoBaseHandler(BaseHandler):
     token = None
@@ -127,9 +128,9 @@ class RepoBaseHandler(BaseHandler):
         repository_id = self.path_kwargs.get('repository_id')
 
         requested_access = self.endpoint_access(self.request.method)
-        use_oauth = getattr(options, 'use_oauth', None)
+        standalone = getattr(options, 'standalone', None)
 
-        if use_oauth and requested_access is not self.UNAUTHENTICATED_ACCESS:
+        if not standalone and requested_access is not self.UNAUTHENTICATED_ACCESS:
             token = self.request.headers.get('Authorization', '').split(' ')[-1]
             if token:
                 has_access = yield self.verify_repository_token(token, requested_access, repository_id)

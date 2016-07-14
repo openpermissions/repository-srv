@@ -198,7 +198,7 @@ def test_prepare_no_repository_id(jwt, verify_repository_token, get_organisation
 
     verify_repository_token.return_value = make_future(True)
 
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'Bearer token1234'}
     handler.path_kwargs = {}
@@ -234,7 +234,7 @@ def test_prepare_oauth_required_valid(jwt, verify_repository_token, get_organisa
 
     verify_repository_token.return_value = make_future(True)
     get_organisation_id.return_value = make_future('org1')
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'Bearer token1234'}
 
@@ -268,7 +268,7 @@ def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, get
     }
     verify_repository_token.return_value = make_future(True)
     get_organisation_id.return_value = make_future('org1')
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'token1234'}
 
@@ -292,7 +292,7 @@ def test_prepare_oauth_required_missing_bearer(jwt, verify_repository_token, get
 @gen_test
 def test_prepare_oauth_required_invalid(verify_repository_token, get_organisation_id, options):
     verify_repository_token.return_value = make_future(False)
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.request.headers = {'Authorization': 'Bearer token1234'}
 
@@ -309,7 +309,7 @@ def test_prepare_oauth_required_invalid(verify_repository_token, get_organisatio
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
 def test_prepare_oauth_required_missing_header(verify_repository_token, get_organisation_id, options):
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.request.headers = {}
 
@@ -326,7 +326,7 @@ def test_prepare_oauth_required_missing_header(verify_repository_token, get_orga
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
 def test_prepare_oauth_required_unauthenticated_endpoint(verify_repository_token, get_organisation_id, options):
-    options.use_oauth = True
+    options.standalone = False
     handler = PartialMockedHandler()
     handler.METHOD_ACCESS = {
         'GET': handler.UNAUTHENTICATED_ACCESS
@@ -345,7 +345,7 @@ def test_prepare_oauth_required_unauthenticated_endpoint(verify_repository_token
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
 def test_prepare_oauth_not_required(verify_repository_token, get_organisation_id, options):
-    options.use_oauth = False
+    options.standalone = True
     handler = PartialMockedHandler()
     get_organisation_id.return_value = make_future('org1')
 
