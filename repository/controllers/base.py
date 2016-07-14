@@ -24,7 +24,6 @@ from repository.models.framework.helper import PermissionException, ValidationEx
 
 from chub import API
 
-define("standalone", help='Run service in standalone mode', default=False, type=bool)
 
 class RepoBaseHandler(BaseHandler):
     token = None
