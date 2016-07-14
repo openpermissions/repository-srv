@@ -129,7 +129,7 @@ class RepoBaseHandler(BaseHandler):
         requested_access = self.endpoint_access(self.request.method)
         standalone = getattr(options, 'standalone', None)
 
-        if not standalone and requested_access is not self.UNAUTHENTICATED_ACCESS:
+        if requested_access is not self.UNAUTHENTICATED_ACCESS and not standalone:
             token = self.request.headers.get('Authorization', '').split(' ')[-1]
             if token:
                 has_access = yield self.verify_repository_token(token, requested_access, repository_id)
@@ -141,7 +141,7 @@ class RepoBaseHandler(BaseHandler):
                 msg = 'OAuth token not provided'
                 raise HTTPError(401, msg)
 
-        if repository_id:
+        if repository_id and not standalone:
             self.organisation_id = yield self.get_organisation_id(repository_id)
 
     def get_content_type(self):

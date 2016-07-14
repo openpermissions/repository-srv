@@ -344,16 +344,16 @@ def test_prepare_oauth_required_unauthenticated_endpoint(verify_repository_token
 @patch('repository.controllers.base.RepoBaseHandler.get_organisation_id')
 @patch('repository.controllers.base.RepoBaseHandler.verify_repository_token')
 @gen_test
-def test_prepare_oauth_not_required(verify_repository_token, get_organisation_id, options):
+def test_prepare_standalone_mode(verify_repository_token, get_organisation_id, options):
     options.standalone = True
     handler = PartialMockedHandler()
-    get_organisation_id.return_value = make_future('org1')
 
     yield handler.prepare()
 
     assert not verify_repository_token.called
-    get_organisation_id.assert_called_once_with('repo1')
+    assert not get_organisation_id.called
     assert handler.token is None
+    assert handler.organisation_id is None
 
 
 @pytest.mark.parametrize('content_type', RepoBaseHandler.ALLOWED_CONTENT_TYPES)
