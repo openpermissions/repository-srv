@@ -109,6 +109,86 @@ Capabilities/limitations of the service
                 }
             }
 
+# Group Namespace
+
+## Initialise Namespace resource [/v1/repository/repositories/{repository_id}/initialise]
+
++ Parameters
+    + repository_id: `4e605140414e60514041` (required, string)
+        Id of repository to initialise
+
+### Intitialise a Repository Namespace[POST]
+
+| OAuth Token Scope |
+| :----------       |
+| write             |
+
+#### Output
+| Property | Description               | Type   |
+| :------- | :----------               | :---   |
+| status   | The status of the request | number |
+
++ Request to intiialise repository namespace
+    + Headers
+
+            Authorization: Bearer [TOKEN]
+
++ Response 200 (application/json; charset=UTF-8)
+    + Headers
+
+            Access-Control-Allow-Origin: *
+
+    + Body
+
+            {
+                "status": 200
+            }
+
+
++ Request to intitialise repository namespace that has not been registered with accounts service
+    + Headers
+
+            Authorization: Bearer [TOKEN]
+            
++ Response 404 (application/json; charset=UTF-8)
+    + Headers
+
+            Access-Control-Allow-Origin: *
+
+    + Body
+
+            {
+                "status": 404,
+                "errors": [
+                    {
+                        "source": "repository",
+                        "message": "Not Found"
+                    }
+                ]
+            }
+
++ Request to intitialise repository namespace that has already been initialised
+    + Headers
+
+            Authorization: Bearer [TOKEN]
+            
++ Response 400 (application/json; charset=UTF-8)
+    + Headers
+
+            Access-Control-Allow-Origin: *
+
+    + Body
+
+            {
+                "status": 404,
+                "errors": [
+                    {
+                        "source": "repository",
+                        "message": "Namespace 4e605140414e60514041 already exists"
+                    }
+                ]
+            }
+
 # Group Assets
 
 ## Assets resource [/v1/repository/repositories/{repository_id}/assets]
