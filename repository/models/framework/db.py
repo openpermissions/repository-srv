@@ -88,15 +88,7 @@ def _initialise_namespace(namespace):
     namespace_query = NAMESPACE_ASSET.format(namespace).strip()
     db_url = _namespace_url('')
     headers = {'Content-Type': 'application/xml'}
-
-    try:
-        yield AsyncHTTPClient().fetch(db_url, method="POST", body=namespace_query, headers=headers)
-    except HTTPError as exc:
-        # Namespace already exists with a 409 error
-        if exc.code != 409:
-            logging.error("%s:%s" % (str(exc.code), exc.message))
-        else:
-            logging.warning('Namespace %s already exists' % namespace)
+    yield AsyncHTTPClient().fetch(db_url, method="POST", body=namespace_query, headers=headers)
 
 
 @coroutine
@@ -177,15 +169,25 @@ def request(body_type, namespace, payload,  response_type=None, content_type=Non
         rsp = yield AsyncHTTPClient().fetch(db_url, method="POST", body=body, headers=headers)
     except HTTPError as exc:
         # If response is 404 then namespace does not exist.
-        # Lazily create namespace and retry request.
-        if exc.code == 404:
-            yield create_namespace(namespace)
+        # If not running in standalone mode, lazily create namespace and retry request.
+        if exc.code == 404 and not options.standalone:
+
+            try:
+                yield create_namespace(namespace)
+            except HTTPError as exc:
+                # Namespace already exists with a 409 error
+                if exc.code != 409:
+                    logging.error("%s:%s" % (str(exc.code), exc.message))
+                else:
+                    logging.warning('Namespace %s already exists' % namespace)
+
             rsp = yield AsyncHTTPClient().fetch(
                 db_url, method="POST", body=body, headers=headers)
         else:
             raise exc
 
     raise Return(rsp)
+
 
 class DatabaseConnection(object):
     def __init__(self, repository_id):

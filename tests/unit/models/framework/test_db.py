@@ -96,34 +96,18 @@ def test__initialise_namespace_creates_namespace(options, fetch):
         headers={'Content-Type': 'application/xml'})
 
 
-@patch('repository.models.framework.db.logging.warning', return_value=True)
 @patch('repository.models.framework.db.AsyncHTTPClient.fetch')
 @patch('repository.models.framework.db.options')
 @gen_test
-def test__initialise_namespace_http_conflict(options, fetch, warning):
-    options.url_repo_db = 'https://localhost'
-    options.repo_db_port = '8080'
-    options.repo_db_path = '/bigdata/namespace/'
-
-    fetch.side_effect = httpclient.HTTPError(409, 'Namespace already exists')
-
-    yield _initialise_namespace('foo')
-
-    assert warning.called
-
-
-@patch('repository.models.framework.db.logging.error', return_value=True)
-@patch('repository.models.framework.db.AsyncHTTPClient.fetch')
-@patch('repository.models.framework.db.options')
-@gen_test
-def test__initialise_namespace_http_error(options, fetch, error):
+def test__initialise_namespace_http_error(options, fetch):
     options.url_repo_db = 'https://localhost'
     options.repo_db_port = '8080'
     options.repo_db_path = '/bigdata/namespace/'
 
     fetch.side_effect = httpclient.HTTPError(500, 'Internal Server Error')
-    yield _initialise_namespace('foo')
-    assert error.called
+    with pytest.raises(httpclient.HTTPError) as exc:
+        yield _initialise_namespace('foo')
+    assert exc.value.code == 500
 
 
 @patch('repository.models.framework.db.load_directory', return_value=make_future(None))
@@ -324,10 +308,67 @@ def test_request_no_namespace(url, create_namespace):
 @patch('repository.models.framework.db._namespace_url', return_value='https://localhost:8000/bigdata/namespace/c8ab01')
 @patch('repository.models.framework.db.AsyncHTTPClient.fetch')
 @gen_test
-def test_request_no_namespace_then_invalid_query(fetch, url, create_namespace):
+def test_request_uninitialised_namespace(fetch, url, create_namespace):
+    fetch.side_effect = [httpclient.HTTPError(404, 'Not Found')]
+    yield request(None, 'c8ab01', 'pay load')
+    assert create_namespace.call_count == 1
+    assert fetch.call_count == 2
+
+
+@patch('repository.models.framework.db.logging.error', return_value=True)
+@patch('repository.models.framework.db.create_namespace')
+@patch('repository.models.framework.db._namespace_url',
+       return_value='https://localhost:8000/bigdata/namespace/c8ab01')
+@patch('repository.models.framework.db.AsyncHTTPClient.fetch')
+@gen_test
+def test_request_initialise_namespace_http_error(fetch, url, create_namespace, error):
+    fetch.side_effect = [httpclient.HTTPError(404, 'Not Found')]
+    create_namespace.side_effect = httpclient.HTTPError(500, 'Internal Server Error')
+    yield request(None, 'c8ab01', 'pay load')
+    assert create_namespace.call_count == 1
+    assert fetch.call_count == 2
+    assert error.called
+
+
+@patch('repository.models.framework.db.logging.warning', return_value=True)
+@patch('repository.models.framework.db.create_namespace')
+@patch('repository.models.framework.db._namespace_url',
+       return_value='https://localhost:8000/bigdata/namespace/c8ab01')
+@patch('repository.models.framework.db.AsyncHTTPClient.fetch')
+@gen_test
+def test_request_initialise_namespace_http_conflict(fetch, url, create_namespace, warning):
+    fetch.side_effect = [httpclient.HTTPError(404, 'Not Found')]
+    create_namespace.side_effect = httpclient.HTTPError(409, 'Namespace already exists')
+    yield request(None, 'c8ab01', 'pay load')
+    assert create_namespace.call_count == 1
+    assert fetch.call_count == 2
+    assert warning.called
+
+
+@patch('repository.models.framework.db.create_namespace', return_value=make_future(None))
+@patch('repository.models.framework.db._namespace_url', return_value='https://localhost:8000/bigdata/namespace/c8ab01')
+@patch('repository.models.framework.db.AsyncHTTPClient.fetch')
+@gen_test
+def test_request_uninitialised_namespace_then_invalid_query(fetch, url, create_namespace):
     fetch.side_effect = [httpclient.HTTPError(404, 'Not Found'), httpclient.HTTPError(500, 'Internal Server Error')]
     with pytest.raises(httpclient.HTTPError) as exc:
         yield request(None, 'c8ab01', 'pay load')
     assert create_namespace.call_count == 1
     assert fetch.call_count == 2
     assert exc.value.code == 500
+
+
+@patch('repository.models.framework.db.create_namespace', return_value=make_future(None))
+@patch('repository.models.framework.db._namespace_url',
+       return_value='https://localhost:8000/bigdata/namespace/c8ab01')
+@patch('repository.models.framework.db.AsyncHTTPClient.fetch')
+@patch('repository.models.framework.db.options')
+@gen_test
+def test_request_uninitialised_namespace_standalone_mode(options, fetch, url, create_namespace):
+    options.standalone = True
+    fetch.side_effect = [httpclient.HTTPError(404, 'Not Found')]
+    with pytest.raises(httpclient.HTTPError) as exc:
+        yield request(None, 'c8ab01', 'pay load')
+    assert not create_namespace.called
+    assert fetch.call_count == 1
+    assert exc.value.code == 404
