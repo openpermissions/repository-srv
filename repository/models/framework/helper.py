@@ -68,19 +68,33 @@ class ValidationException(Exception):
     """
     pass
 
+
 def validate(data, format=None):
     """
     Takes a body and sees if it would blow up if it were
     passed to rdf lib.
 
-    :param data: xml or ttl data
-    :param format: used if format cannot be determined from source. Can either be 'xml' or 'turtle'
+    :param data: xml, ttl, or json-ld data
+    :param format: used if format cannot be determined from source. Can either be 'xml', 'turtle' or 'json-ld'
     :return: None
     :raises ValidationException if there is anything wrong
     """
     graph = rdflib.Graph()
+    kwargs = {}
+
+    if format == "json-ld":
+        try:
+            json_data = json.loads(data)
+        except ValueError, e:
+            raise ValidationException("Unable to parse data:" + str(e, ))
+
+        if '@graph' in json_data:
+            data = json.dumps(json_data['@graph'])
+            kwargs['context'] = json_data.get('@context', {})
+
     try:
-        graph.parse(data=data, format=format)
+        graph.parse(data=data, format=format, **kwargs)
+        return graph
     except Exception, e:
         logging.error(data)
         raise ValidationException("error while parsing data+"+str(e))
