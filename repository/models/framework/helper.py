@@ -72,11 +72,11 @@ class ValidationException(Exception):
 def validate(data, format=None):
     """
     Takes a body and sees if it would blow up if it were
-    passed to rdf lib.
+    passed to rdf lib. Returns rdf lib graph with loaded data.
 
     :param data: xml, ttl, or json-ld data
     :param format: used if format cannot be determined from source. Can either be 'xml', 'turtle' or 'json-ld'
-    :return: None
+    :return: rdflib.Graph
     :raises ValidationException if there is anything wrong
     """
     graph = rdflib.Graph()
