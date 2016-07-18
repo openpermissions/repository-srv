@@ -10,3 +10,5 @@
 __version__ = '1.0.9'
 
 from tornado.options import define
+
+define("standalone", help='Run service in standalone mode', default=False, type=bool)

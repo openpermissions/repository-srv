@@ -90,7 +90,7 @@ class Offer(Policy):
 
     @classmethod
     @gen.coroutine
-    def new_offer(cls, repository, offer, assigner, format="xml"):
+    def new_offer(cls, repository, offer, assigner=None, format="xml"):
         """
         Create a new offer.
 
@@ -127,9 +127,12 @@ class Offer(Policy):
         results = list(ng.query(query))
         offer_id = results[0][0]
 
-        # set assigner
-        party = yield Party.new_party(future_wrap(ng), assigner)
-        yield cls.set_attr(future_wrap(ng), offer_id, POLICY_ASSIGNER,  solve_ns(Party.normalise_id(party)))
+        # If assigner is provided, set as assigner in offer data.
+        # ( Assigner will not be provided if in standalone mode,
+        #   in which case we allow assigner to be included as part of input )
+        if assigner:
+            party = yield Party.new_party(future_wrap(ng), assigner)
+            yield cls.set_attr(future_wrap(ng), offer_id, POLICY_ASSIGNER,  solve_ns(Party.normalise_id(party)))
 
         rdfxml = ng.serialize()
         yield cls.store(repository, rdfxml)

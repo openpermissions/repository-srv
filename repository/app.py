@@ -17,7 +17,7 @@ import koi
 
 from .controllers import (
     agreements_handler, assets_handler, capabilities_handler,
-    offers_handler, sets_handler, root_handler)
+    offers_handler, namespace_handler, sets_handler, root_handler)
 
 from . import __version__
 from . import audit
@@ -29,6 +29,7 @@ CONF_DIR = os.path.join(os.path.dirname(__file__), '../config')
 APPLICATION_URLS = [
     (r"", root_handler.RootHandler, {'version': __version__}),
     (r"/capabilities", capabilities_handler.CapabilitiesHandler),
+    (r"/repositories/{repository_id}/initialise$", namespace_handler.NamespaceHandler),
     (r"/repositories/{repository_id}/assets/identifiers$", assets_handler.IdentifiersHandler),
     (r"/repositories/{repository_id}/assets/{entity_id}/ids$", assets_handler.AssetIDHandler),
     (r"/repositories/{repository_id}/assets$", assets_handler.AssetsHandler),

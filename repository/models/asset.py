@@ -233,7 +233,11 @@ class Asset(Entity):
         assetids = get_asset_ids(payload, content_type)
         entity_ids = [x[u'entity_id'] for x in assetids]
         yield Entity.insert_timestamps(ids=entity_ids, repository=repository)
-        IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
+
+        # Send notification to index service if not in standalone mode
+        if not options.standalone:
+            IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
+
         raise Return(assetids)
 
 

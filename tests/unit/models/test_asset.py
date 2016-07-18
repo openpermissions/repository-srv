@@ -15,7 +15,7 @@ from datetime import datetime
 from StringIO import StringIO
 import uuid
 import os
-from mock import patch, Mock
+from mock import patch, Mock, MagicMock
 from tornado.ioloop import IOLoop
 from koi.test_helpers import gen_test, make_future
 from repository.models.asset import store, send_notification
@@ -94,15 +94,23 @@ def test_store_db_called_with_content_type(get_asset_ids, send_notification):
         content_type='application/json')
 
 
-@patch('repository.models.asset.send_notification', return_value=make_future(None))
 @patch('repository.models.asset.get_asset_ids', return_value=[])
 @patch('repository.models.asset.IOLoop')
 @gen_test
-def test_store_notification_sent(IOLoop, get_asset_ids, send_notification):
+def test_store_notification_sent(IOLoop, get_asset_ids):
     db = create_mockdb()
     yield store(db, get_valid_xml())
-    assert IOLoop.current().spawn_call_back.called_once_with(send_notification)
+    assert IOLoop.current().spawn_callback.called_once
 
+@patch('repository.models.asset.get_asset_ids', return_value=[])
+@patch('repository.models.asset.IOLoop')
+@patch('repository.models.asset.options')
+@gen_test
+def test_store_notification_not_sent_in_standalone_mode(options, IOLoop, get_asset_ids):
+    options.standalone = True
+    db = create_mockdb()
+    yield store(db, get_valid_xml())
+    assert not IOLoop.current().spawn_callback.called
 
 @patch('repository.models.asset.send_notification', return_value=make_future(None))
 @patch('repository.models.asset.get_asset_ids', return_value=[{'entity_id':  'res'}])
