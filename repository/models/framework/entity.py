@@ -112,6 +112,10 @@ class Entity(object):
 
         if content_type == 'application/xml':
             helper.validate(payload, 'xml')
+        elif content_type == 'application/ld+json':
+            g = helper.validate(payload, 'json-ld')
+            payload = g.serialize()
+            content_type = 'application/xml'
 
         yield cls.call_event_handler("before_store", payload=payload, content_type=content_type, repository=repository)
 

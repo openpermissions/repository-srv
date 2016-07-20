@@ -155,8 +155,6 @@ class IdentifiersHandler(RepoBaseHandler):
 
 class AssetsHandler(RepoBaseHandler):
     """Responsible for storing assets for a repository in database"""
-    ALLOWED_CONTENT_TYPES = ('application/xml', 'text/rdf+n3')
-
     @gen.coroutine
     def post(self, repository_id):
         """
