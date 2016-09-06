@@ -84,19 +84,23 @@ WHERE {{
         SELECT ?{id_name} (MAX(?when) AS ?last_modified)
 
         WHERE {{
-            ?{id_name} a {class} .
-            OPTIONAL {{ ?{id_name} dcterm:modified ?when  }}
+            {{ SELECT ?{id_name} {{
+                ?{id_name} a {class} .
+                OPTIONAL {{ ?{id_name} dcterm:modified ?when  }}
 
-            {filter}
+                {filter}
+          }} LIMIT {page_size}
+             OFFSET {offset}
+         }}
+         OPTIONAL {{ ?{id_name} dcterm:modified ?when }}
         }}
         GROUP BY ?{id_name}
     }}
     {extra_query}
 }}
 ORDER BY ?last_modified
-LIMIT {page_size}
-OFFSET {offset}
 """
+
 
 INSERT_DATA = """
 INSERT DATA {
