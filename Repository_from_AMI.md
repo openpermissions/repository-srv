@@ -58,6 +58,7 @@ Make a note of the client Secret.
 As above, this request has to be approved. You will get an email saying your request has been sent in. And you will get an email when it has been approved.
 
 **Go to “Repositories” and select “Create a new Repository”**
+
 Select the repository service you have just created above and give it a name.
 Again, you will get an email acknowledging your request, and an email when it has been approved.
 
@@ -75,8 +76,10 @@ Choose the region you want the instance deployed in
 Wait for the machine to go through the pending state and be running
 
 Your instance will have an IP address. At this point we recommend that you:
+
 1. Obtain an Amazon Elastic IP address (i.e. a permanent IP address. This is a service you pay for) and assign it to your new instance.
-2. Create a DNS entry in Route52 that points the Elastic IP address to your preferred subdomain on your site (e.g. repo.mydomain.org)
+
+2. Create a DNS entry in AWS Route52 that points the Elastic IP address to your preferred subdomain on your site (e.g. repo.mydomain.org)
 
 
 More instructions here....
@@ -130,7 +133,7 @@ sudo chown ubuntu:ubuntu {keyfile}
 sudo chmod 775 {certfile}
 sudo chown root:root {certfile}
 ```
-***Restart nginx**
+**Restart nginx**
 ```
 sudo nginx -s reload
 ```
@@ -139,5 +142,11 @@ If it wasn’t already running then just
 sudo nginx
 ```
 
-Go to yourdomain:8080 (the blazegraph admin) and create a namespace in Blazegraph that corresponds to the repo id of your organisation.
+**Go to yourdomain:8080 (the blazegraph admin)**
+
+Click on the "Namespaces" tab and create a namespace that corresponds to the repo id of your organisation (see Step 1 above).
+
+###You have finished!
+
+At this point, you should have a repository that is fully connected to the Copyright Hub ecosystem.
 
