@@ -20,10 +20,12 @@ To fully complete this process you will need to have:
 
 
 
-There are three steps to follow:
-######  Step 1 - Join the Copyright Hub ecosystem
-###### Step 2 - Create a Repository Instance from the AWS Marketplace
-###### Step 3 -  Configure the Repository Instance
+There are four steps to follow:
+#####Step 1 - Join the Copyright Hub ecosystem
+#####Step 2 - Create a Repository Instance from the AWS Marketplace
+#####Step 3 - Configure the Repository Instance
+#####Step 4 - Test that it has worked
+
 
 
 ### Step 1 - Join the Copyright Hub ecosystem
@@ -148,5 +150,58 @@ Click on the "Namespaces" tab and create a namespace that corresponds to the rep
 
 ###You have finished!
 
-At this point, you should have a repository that is fully connected to the Copyright Hub ecosystem.
+
+### Step 4 - Test that it has worked
+
+At this point, you should have a repository that is fully connected to the Copyright Hub ecosystem. To test it, you can use the onboarding and query services provided by the Copyright Hub.
+
+Save this document to a Makefile in your local machine (and substitute in your client, secret and repo ids) :
+
+```
+.DEFAULT_GOAL := onboard
+
+SRV_AUTH  = https://acc.copyrighthub.org
+SRV_ON    = https://on.copyrighthub.org
+CLIENT    = <your client id here>
+SECRET    = <your client secret here>
+REPO      = <your repository id here>
+
+AUTH_FILE = auth.json
+DATA_FILE = on.csv
+
+clean:
+	-rm $(AUTH_FILE) $(DATA_FILE)
+
+$(AUTH_FILE) :
+	curl -k $(SRV_AUTH)/v1/auth/token --user $(CLIENT):$(SECRET) --data "grant_type=client_credentials&scope=delegate[https://on.copyrighthub.org]:write[$(REPO)]" -o $@
+
+auth: $(AUTH_FILE)
+
+$(DATA_FILE) :
+	echo source_id_types,source_ids,offer_ids,description                                         > $@
+	echo danpicspictureid,DSC_012344567,,"Leopard eating Gazelle in Africa" >> $@
+
+data: $(DATA_FILE)
+
+onboard: clean auth data
+	$(eval TOKEN := $(shell python -c "import sys, json; print(json.loads(open('${AUTH_FILE}').read())['access_token'])"))
+	curl -k $(SRV_ON)/v1/onboarding/repositories/$(REPO)/assets --data-binary @$(DATA_FILE) --header "Accept: application/json" --header "Content-Type: text/csv; charset=utf-8" --header "Authorization: $(TOKEN)"
+
+verify: clean auth data
+	$(eval TOKEN := $(shell python -c "import sys, json; print(json.loads(open('${AUTH_FILE}').read())['access_token'])"))
+	curl -k $(SRV_AUTH)/v1/auth/verify --header "Accept: application/json" --header "Content-Type: application/x-www-form-urlencode" --header "Authorization: BASIC [$(CLIENT):$(SECRET)]" --data-binary "requested_access=r&token=$(TOKEN)&resource_id=$(REPO)"
+
+```
+
+Then run 
+`` 
+make
+```
+
+If all is well, you should get something like this as a response:
+
+```
+{"status": 200, "data": [{"entity_id": "74c2436fae9e4a13a9d85a6f5a4578e4", "source_ids": [{"source_id": "DSC_012344567", "source_id_type": "danpicspictureid"}], "hub_key": "https://openpermissions.org/s1/hub1/f74c5de3db2e49c693c152a2da87e6d7/asset/74c2436fae9e4a13a9d85a6f5a4578e4", "entity_type": "asset"}]}
+```
+
 
