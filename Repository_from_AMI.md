@@ -194,14 +194,25 @@ verify: clean auth data
 ```
 
 Then run 
-`` 
+``` 
 make
 ```
 
 If all is well, you should get something like this as a response:
 
 ```
-{"status": 200, "data": [{"entity_id": "74c2436fae9e4a13a9d85a6f5a4578e4", "source_ids": [{"source_id": "DSC_012344567", "source_id_type": "danpicspictureid"}], "hub_key": "https://openpermissions.org/s1/hub1/f74c5de3db2e49c693c152a2da87e6d7/asset/74c2436fae9e4a13a9d85a6f5a4578e4", "entity_type": "asset"}]}
+{
+	"status": 200,
+	"data": [{
+		"entity_id": "74c2436fae9e4a13a9d85a6f5a4578e4",
+		"source_ids": [{
+			"source_id": "DSC_012344567",
+			"source_id_type": "danpicspictureid"
+		}],
+		"hub_key": "https://openpermissions.org/s1/hub1/f74c5de3db2e49c693c152a2da87e6d7/asset/74c2436fae9e4a13a9d85a6f5a4578e4",
+		"entity_type": "asset"
+	}]
+}
 ```
 
 
