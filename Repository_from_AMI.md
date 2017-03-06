@@ -9,9 +9,13 @@ Before your start
 -----------------------
 
 To fully complete this process you will need to have:
+
 1. An AWS account.
+
 2. A domain with an SSL certificate (e.g. https://copyrighthub.org).
+
 3. The SSL keys for the above certificate.
+
 4. An ssh key to log into the machine you will create (see [here](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) for instructions on how to generate ssh keys)
 
 
