@@ -15,6 +15,7 @@ To fully complete this process you will need to have:
 4. An ssh key to log into the machine you will create (see [here](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/) for instructions on how to generate ssh keys)
 
 
+
 There are three steps to follow:
 ######  Step 1 - Join the Copyright Hub ecosystem
 ###### Step 2 - Create a Repository Instance from the AWS Marketplace
@@ -31,19 +32,19 @@ This is currently a process that requires authorisation at every step, so we rec
 
 You will receive an email requesting that you click a link to verify your email address. Note that even after clicking on this link, you may still have to logout of the service.copyrighthub.org system and then re-login in order to fully activate your account.
 
-**Click on "Create a New Organization" an fill in the form.**
+**Click on "Create a New Organization" and fill in the form.**
 
-Only organization name is required.
+Only organization name is a required field.
 You will not get any on-screen confirmation that your request has been sent in, but you will get an email saying it has been sent in. The request has to be approved by a CH admin. When that happens, you will get an email confirming your request has been approved.
 
-**"Join" your organisation by using the “Join Existing Organisation” button**
+**Join your organisation by using the “Join Existing Organisation” button**
 
 Again, you will get an email saying you have requested to join.
 Once the request has been authorised, you will get an email telling you it has been authorised.
 
 **Select the Organisation from the “Existing Organisations” dropdown**
 
-**Click on Create a New Service**
+**Click on "Create a New Service"**
 
 "Location" is the URL where you intend the repo to be available, e.g. “https://myrepo.mydomain.org”.
 "Service Type" is “Repository”.
