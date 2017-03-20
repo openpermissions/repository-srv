@@ -21,10 +21,10 @@ To fully complete this process you will need to have:
 
 
 There are four steps to follow:
-#####Step 1 - Join the Copyright Hub ecosystem
-#####Step 2 - Create a Repository Instance from the AWS Marketplace
-#####Step 3 - Configure the Repository Instance
-#####Step 4 - Test that it has worked
+##### Step 1 - Join the Copyright Hub ecosystem
+##### Step 2 - Create a Repository Instance from the AWS Marketplace
+##### Step 3 - Configure the Repository Instance
+##### Step 4 - Test that it has worked
 
 
 
