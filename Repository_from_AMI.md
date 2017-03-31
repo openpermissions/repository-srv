@@ -148,7 +148,7 @@ sudo nginx
 
 Click on the "Namespaces" tab and create a namespace that corresponds to the repo id of your organisation (see Step 1 above).
 
-###You have finished!
+### You have finished!
 
 
 ### Step 4 - Test that it has worked
