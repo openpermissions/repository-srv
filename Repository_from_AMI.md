@@ -94,7 +94,7 @@ More instructions here....
 ssh -i ~/.ssh/your-key-pair.pub ubuntu@{your-instance-IP}
 ```
 
-**Edit the file at /srv/repository/current/config/local.conf**
+**Edit (using sudo!) the file at /srv/repository/current/config/local.conf**
 
 
 Enter your client secret, and service id (see Step 1 above. Confusingly, service_id = repository_id), e.g. 
