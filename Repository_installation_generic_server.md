@@ -135,7 +135,7 @@ JETTY_SHELL=/bin/bash
 
 Configure logging
 ```
-cd /opt/jetty4/resources
+cd /opt/jetty9/resources
 
 java -jar ../start.jar --add-to-start=requestlog
 ```
