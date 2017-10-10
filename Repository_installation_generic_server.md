@@ -213,7 +213,7 @@ client_secret = "{client_secret}"
 
 ### Launching the repository process
 ```
-python /opt/repository/
+python /opt/repository-srv/repository/
 ```
 
 ### Further optional configurations
