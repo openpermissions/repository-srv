@@ -160,7 +160,7 @@ chown jetty:jetty /opt/jetty9/webapps/blazegraph.war
 service jetty9 start
 ```
 
-6. Accessing Blazegraph
+Accessing Blazegraph
 
 You should now be able to access your Blazegraph instance accessing <http://your_repo.example.com:8080/blazegraph>
 
@@ -213,12 +213,12 @@ client_secret = "{client_secret}"
 
 ### Launching the repository process
 ```
-python /opt/repository-srv/repository/
+python /opt/repository-srv/repository
 ```
 
 ### Further optional configurations
 
-You can execute the repository process with the single command ``python /opt/repository``.
+You can execute the repository process with the single command ``python /opt/repository-srv/repository``.
 
 You might prefer to use some kind of process manager to handle the execution of the process like, for exampe, [Supervisor](http://supervisord.org/).
 
