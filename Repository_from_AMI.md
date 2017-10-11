@@ -75,6 +75,11 @@ Make a note of the repository id
 
 Choose the region you want the instance deployed in
 
+Go through the setup procedure. We recommend:
+* a t2.xlarge instance type
+* That it sits in its own VPC
+* When configuring the security group, add a rule to allow all traffic (0.0.0.0) to port 8765 (where the repo service is looking for queries)
+
 Wait for the machine to go through the pending state and be running
 
 Your instance will have an IP address. At this point we recommend that you:
@@ -138,6 +143,7 @@ sudo chown root:root {certfile}
 **Restart nginx**
 ```
 sudo nginx -s reload
+(or just sudo nginx if it hasn't been started before)
 ```
 If it wasn’t already running then just 
 ```
