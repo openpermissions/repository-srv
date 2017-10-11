@@ -143,9 +143,8 @@ sudo chown root:root {certfile}
 **Restart nginx**
 ```
 sudo nginx -s reload
-(or just sudo nginx if it hasn't been started before)
 ```
-If it wasn’t already running then just 
+If it wasn’t already running (you get an error when doing the above) then just 
 ```
 sudo nginx
 ```
