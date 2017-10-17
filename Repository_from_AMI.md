@@ -165,7 +165,7 @@ Save this document to a Makefile in your local machine (and substitute in your c
 ```
 .DEFAULT_GOAL := onboard
 
-SRV_AUTH  = https://acc.copyrighthub.org
+SRV_AUTH  = https://auth.copyrighthub.org
 SRV_ON    = https://on.copyrighthub.org
 CLIENT    = <your client id here>
 SECRET    = <your client secret here>
