@@ -89,7 +89,8 @@ WHERE {{
                 OPTIONAL {{ ?{id_name} dcterm:modified ?when  }}
 
                 {filter}
-          }} LIMIT {page_size}
+          }} ORDER BY ?when
+             LIMIT {page_size}
              OFFSET {offset}
          }}
          OPTIONAL {{ ?{id_name} dcterm:modified ?when }}
