@@ -220,4 +220,17 @@ If all is well, you should get something like this as a response:
 }
 ```
 
+Updating the repo service code
+-----------------------
 
+If changes have been made to the code and pushed to Github and you want to integrate them into your installation, take the following steps:
+
+```
+sudo -u deploy -s
+cd /srv/repository/current
+git checkout master
+git pull
+exit
+sudo supervisorctl restart repository
+```
+This will pull the latest version from Github and restart the service to incoporate the new code.
