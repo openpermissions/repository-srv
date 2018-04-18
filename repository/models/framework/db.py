@@ -169,9 +169,8 @@ def request(body_type, namespace, payload,  response_type=None, content_type=Non
         rsp = yield AsyncHTTPClient().fetch(db_url, method="POST", body=body, headers=headers)
     except HTTPError as exc:
         # If response is 404 then namespace does not exist.
-        # If not running in standalone mode, lazily create namespace and retry request.
-        if exc.code == 404 and not options.standalone:
-
+        # Lazily create namespace and retry request.
+        if exc.code == 404:
             try:
                 yield create_namespace(namespace)
             except HTTPError as exc:
