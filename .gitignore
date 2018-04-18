@@ -25,3 +25,5 @@ audit.log.*
 .cache
 
 node_modules
+.vscode/settings.json
+open_permissions_platform_repository_service.egg-info/*
