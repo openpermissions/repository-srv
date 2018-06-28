@@ -85,8 +85,37 @@ def _validate_ids(ids):
     return errors
 
 
+def get_asset_source_ids(assets_data, content_type, entity_id):
+    """
+    This function extracts source_id and source_id_type of each asset in the data.
+    It does this by creating an in memory graph via RDF Lib.
+
+    * Caution this is potentially very cpu expensive and could use a lot of memory
+
+    :param assets_data: A blob of triples
+    :param content_type:  The type of the blob
+    :return: an array of dicts that show the ids of assets
+    """
+    graph = rdflib.graph.Graph()
+    graph.parse(data=assets_data, format=TYPE_MAPPING[content_type])
+    result = graph.query(
+            SPARQL_PREFIXES + (
+              ASSET_GET_ALSO_IDENTIFIED.format(
+                entity_id=Asset.normalise_id(entity_id)
+              )
+            ))
+    result = [{'source_id_type': x[0].split('/')[-1], 'source_id': str(x[1])} for x in result]
+    return result
+
 def get_asset_ids(assets_data, content_type):
     """
+    *********************************************************************************
+    **** NOTE - 28 June 2018                                                    *****
+    **** This function does NOT do what the original comment below says         *****
+    **** This function does NOT extract source_id etc from an in memory graph   *****
+    **** Thus function DOES retrieve asset ids from an in memory graph          *****
+    *********************************************************************************
+
     This function extracts source_id, source_id_type and entity_uri of each asset in the data.
     It does this by creating an in memory graph via RDF Lib.
 
@@ -148,6 +177,7 @@ def send_notification(repository, **kwargs):
             headers=headers,
             body=json.dumps({'id': repository.repository_id}))
 
+        logging.debug('calling send_notification ' + str(repository))
         yield client.index.notifications.post()
     except Exception as e:
         logging.exception("failed to notify index: " + e.message)
@@ -235,11 +265,23 @@ class Asset(Entity):
         yield Entity.insert_timestamps(ids=entity_ids, repository=repository)
 
         # Send notification to index service if not in standalone mode
+        ###### This fails - Investigate why
         if not options.standalone:
             IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
 
         raise Return(assetids)
 
+    @classmethod
+    @coroutine
+    def before_store(cls, payload, content_type, repository):
+        assetids = get_asset_ids(payload, content_type)
+        entity_ids = [x[u'entity_id'] for x in assetids]
+
+        for entity_id in entity_ids:
+            ids = get_asset_source_ids(payload, content_type, entity_id)
+            logging.debug('beforestore got ' + str(ids))
+            # delete existing tripes here from index then repo
+        raise Return()
 
 @coroutine
 def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000):
