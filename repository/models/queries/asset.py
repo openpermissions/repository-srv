@@ -81,8 +81,8 @@ GROUP BY ?{idname}_id_bundle
 # Gets ids for all assets in graph
 # NOTE: Not used in blazegraph. Used when onboarding assets to identify the assets coming from the user.
 # :returns entity_id: Id of Asset
+#PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 ASSET_QUERY_ALL_ENTITY_IDS = """
-PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 
 SELECT DISTINCT ?entity_id WHERE
 {
