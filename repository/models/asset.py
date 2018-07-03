@@ -32,7 +32,13 @@ from .queries.asset import (ASSET_CLASS,
                             ASSET_GET_ALSO_IDENTIFIED,
                             ASSET_SELECT_BY_SOURCE_ID,
                             ASSET_SELECT_BY_ENTITY_ID,
-                            ASSET_STRUCT_SELECT
+                            ASSET_STRUCT_SELECT,
+                            FIND_ENTITY_TEMPLATE,
+                            SOURCE_ID_FILTER_TEMPLATE,
+                            FIND_ENTITY_SOURCE_IDS_TEMPLATE,
+                            FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE,
+                            DELETE_ID_TRIPLES_TEMPLATE,
+                            DELETE_ENTITY_TRIPLE_TEMPLATE
                             )
 from .queries.generic import *
 from .framework.entity import Entity, build_sparql_str, build_uuid_reference, build_hub_reference, ENTITY_ID_REGEX
@@ -281,7 +287,172 @@ class Asset(Entity):
             ids = get_asset_source_ids(payload, content_type, entity_id)
             logging.debug('beforestore got ' + str(ids))
             # delete existing tripes here from index then repo
+
+            # do remote call to index service eg
+            # DELETE http://0.0.0.0:8002/v1/index/entity-types/asset/id-types/isbn,doi/ids/schaduwkutkinderen,10293812354/repositories/0d03c70712a8483ebf6d4a7c17228f9e
+            # need to get an auth token first
+
+            # delete from repository
+            yield delete(ids)
         raise Return()
+
+    @gen.coroutine
+    def _getMatchingEntities(self, ids):
+        """
+        Get list of entities matching the given incoming ids 
+
+        :param ids: a list of dictionaries containing "source_id" & "source_id_type".
+        :param repository_id: the repo to search.
+
+        :returns: a list of entity ids
+        """
+        subqueries = [SOURCE_ID_FILTER_TEMPLATE.substitute(id = x['source_id'], id_type = x['source_id_type'])
+                      for x in ids]
+
+        query = FIND_ENTITY_TEMPLATE.substitute(id_filter = ''.join(subqueries))
+
+        logging.debug(query)
+        queryresults = yield cdb.query(query)
+        logging.debug(queryresults)
+
+        results = [x['s'] for x in cls._parse_response(queryresults)]
+        raise gen.Return(results)
+
+    @gen.coroutine
+    def _getEntityIdsAndTypes(self, entity_id):
+        """
+        Get list of source_ids and source_id_types for a given entity id
+
+        :param entity_id: the entity id
+
+        :returns: a list of source_id and source_id_types
+        """
+        query = FIND_ENTITY_SOURCE_IDS_TEMPLATE.substitute(entity_id = entity_id)
+
+        logging.debug(query)
+        queryresults = yield cdb.query(query)
+        logging.debug(queryresults)
+
+        results = [{'source_id_type': x['idtype'], 'source_id': x['id']} for x in cls._parse_response(queryresults)]
+
+        raise gen.Return(results)
+
+    @gen.coroutine
+    def _countMatchesNotIncluding(self, idAndType, entity_id):
+        """
+        Count the number of entities using these ids/types (other than this entity)
+
+        :param: idAndType: the source_id and source_id_type to search for
+        :param entity_id: the entity id of the entity to exclude
+
+        :returns: a count of entities
+        """
+        logging.debug('idandtype ' + str(idAndType))
+        query = FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
+                                                                    source_id = idAndType['source_id'],
+                                                                    entity_id = entity_id)
+
+        logging.debug(query)
+        queryresults = yield cdb.query(query)
+        logging.debug(queryresults)
+
+        raise gen.Return(cls._parse_response(queryresults)
+
+    @gen.coroutine
+    def _deleteIds(self, idAndType):
+        """
+        Delete id/type triples
+
+        :param: idAndType: the source_id and source_id_type to delete
+
+        :returns: nothing
+        """
+        logging.debug('delete idandtype ' + str(idAndType))
+        query = DELETE_ID_TRIPLES_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
+                                                                    source_id = idAndType['source_id'])
+
+        logging.debug(query)
+        queryresults = yield cdb.query(query)
+        logging.debug(queryresults)
+
+        raise gen.Return()    
+
+    
+    @gen.coroutine
+    def _deleteAsset(self, entity_id):
+        """
+        Delete entity triples
+
+        :param: entity_id: the id of the entity to delete
+
+        :returns: nothing
+        """
+        logging.debug('delete entity_id ' + str(entity_id))
+        query = DELETE_ENTITY_TRIPLE_TEMPLATE.substitute(entity_id = entity_id)
+
+        logging.debug(query)
+        queryresults = yield cdb.query(query)
+        logging.debug(queryresults)
+
+        raise gen.Return()    
+
+    @gen.coroutine
+    def delete(self, ids):
+        """
+        Delete the triples relating to an entity (if they're not used
+        by another entity)
+
+        :param ids: a list of dictionaries containing "id" & "id_type"
+        """
+        
+        validated_ids, errors = [], []
+
+        for x in ids:                        # source_id / source_id_type
+            if 'id' in x:
+                x['source_id'] = x['id']
+                x['source_id_type'] = x['id_type']
+            if 'source_id_type' not in x or 'source_id' not in x:
+                errors.append(x)
+            elif x['source_id_type'] == HUB_KEY:
+                try:
+                    parsed = hubkey.parse_hub_key(x['source_id'])
+                    x['source_id'] = parsed['entity_id']
+                    validated_ids.append(x)
+                except ValueError:
+                    errors.append(x)
+            else:
+                # NOTE: internal representation of the index will use
+                # id_type and id to construct URI and assusmes that id_type
+                # and and have been url_quoted
+                x['source_id'] = urllib.quote_plus(x['source_id'])
+                x['source_id_type'] = urllib.quote_plus(x['source_id_type'])
+                validated_ids.append(x)
+
+        if errors:
+            raise exceptions.HTTPError(400, errors)
+
+        # get all the entities that match the the ids in this repo
+        entities = yield self._getMatchingEntities(validated_ids)
+
+        logging.debug('entities ' + str(entities))
+
+        # for each entity find all the ids associated with it
+        for entity in entities:
+            idsAndTypes = yield self._getEntityIdsAndTypes(entity)
+
+            # loop through each set of ids for this entity
+            for idAndType in idsAndTypes:
+                # if these ids are NOT used for anything else then delete them
+                result = yield self._countMatchesNotIncluding(idAndType, entity)
+                count = int(result[0].get('count', '0'))
+
+                if count == 0:
+                    yield self._deleteIds(idAndType)
+            
+            # delete the entity itself
+            yield self._deleteAsset(entity)
+            
+        raise gen.Return()
 
 @coroutine
 def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000):
