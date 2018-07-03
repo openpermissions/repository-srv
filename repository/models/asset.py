@@ -296,7 +296,7 @@ class Asset(Entity):
             yield delete(ids)
         raise Return()
 
-    @gen.coroutine
+    @coroutine
     def _getMatchingEntities(self, ids):
         """
         Get list of entities matching the given incoming ids 
@@ -318,7 +318,7 @@ class Asset(Entity):
         results = [x['s'] for x in cls._parse_response(queryresults)]
         raise gen.Return(results)
 
-    @gen.coroutine
+    @coroutine
     def _getEntityIdsAndTypes(self, entity_id):
         """
         Get list of source_ids and source_id_types for a given entity id
@@ -337,7 +337,7 @@ class Asset(Entity):
 
         raise gen.Return(results)
 
-    @gen.coroutine
+    @coroutine
     def _countMatchesNotIncluding(self, idAndType, entity_id):
         """
         Count the number of entities using these ids/types (other than this entity)
@@ -356,9 +356,9 @@ class Asset(Entity):
         queryresults = yield cdb.query(query)
         logging.debug(queryresults)
 
-        raise gen.Return(cls._parse_response(queryresults)
+        raise gen.Return(cls._parse_response(queryresults))
 
-    @gen.coroutine
+    @coroutine
     def _deleteIds(self, idAndType):
         """
         Delete id/type triples
@@ -378,7 +378,7 @@ class Asset(Entity):
         raise gen.Return()    
 
     
-    @gen.coroutine
+    @coroutine
     def _deleteAsset(self, entity_id):
         """
         Delete entity triples
@@ -396,7 +396,7 @@ class Asset(Entity):
 
         raise gen.Return()    
 
-    @gen.coroutine
+    @coroutine
     def delete(self, ids):
         """
         Delete the triples relating to an entity (if they're not used
