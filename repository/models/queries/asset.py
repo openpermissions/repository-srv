@@ -149,30 +149,28 @@ SOURCE_ID_FILTER_TEMPLATE = string.Template("""
 
 FIND_ENTITY_SOURCE_IDS_TEMPLATE = string.Template("""
 SELECT DISTINCT ?id ?idtype
-WHERE {<h$entity_id> ?p ?o.
+WHERE {<$entity_id> ?p ?o.
 ?o  	<http://openpermissions.org/ns/op/1.1/value>  ?id;
 <http://openpermissions.org/ns/op/1.1/id_type> ?idtype.}
 """)
 
 FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE = string.Template("""
-PREFIX hub: <http://openpermissions.org/ns/hub/>
 SELECT (COUNT(?s) AS ?count)
 WHERE {?s ?p ?o.
 		?o 
            <http://openpermissions.org/ns/op/1.1/value> "$source_id";
-			<http://openpermissions.org/ns/op/1.1/id_type> hub:$source_id_type
+			<http://openpermissions.org/ns/op/1.1/id_type> <$source_id_type>
 			.    
       FILTER NOT EXISTS {<$entity_id> ?p ?o}
                  }
 """)
 
 DELETE_ID_TRIPLES_TEMPLATE = string.Template("""
-PREFIX hub: <http://openpermissions.org/ns/hub/>
 #DELETE
 CONSTRUCT
 WHERE {?s 
            <http://openpermissions.org/ns/op/1.1/value> "$source_id";
-			<http://openpermissions.org/ns/op/1.1/id_type> hub:$source_id_type;
+			<http://openpermissions.org/ns/op/1.1/id_type> <$source_id_type>;
       ?p ?o.}
 """)
 

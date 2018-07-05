@@ -49,6 +49,7 @@ TYPE_MAPPING = {
     'application/xml': 'xml'
 }
 
+HUB_KEY = "hub_key"
 
 @coroutine
 def _insert_ids(repository, entity_id, ids):
@@ -293,16 +294,17 @@ class Asset(Entity):
             # need to get an auth token first
 
             # delete from repository
-            yield delete(ids)
+            yield cls._delete(repository, ids)
         raise Return()
 
+    @classmethod
     @coroutine
-    def _getMatchingEntities(self, ids):
+    def _getMatchingEntities(self, dbc, ids):
         """
         Get list of entities matching the given incoming ids 
 
+        :param dbc: the repository database connection
         :param ids: a list of dictionaries containing "source_id" & "source_id_type".
-        :param repository_id: the repo to search.
 
         :returns: a list of entity ids
         """
@@ -311,58 +313,56 @@ class Asset(Entity):
 
         query = FIND_ENTITY_TEMPLATE.substitute(id_filter = ''.join(subqueries))
 
-        logging.debug(query)
-        queryresults = yield cdb.query(query)
-        logging.debug(queryresults)
+        queryresults = yield dbc.query(query)
 
-        results = [x['s'] for x in cls._parse_response(queryresults)]
-        raise gen.Return(results)
+        results = [x['s'] for x in self._parse_response(queryresults)]
+        raise Return(results)
 
+    @classmethod
     @coroutine
-    def _getEntityIdsAndTypes(self, entity_id):
+    def _getEntityIdsAndTypes(self, dbc, entity_id):
         """
         Get list of source_ids and source_id_types for a given entity id
 
+        :param dbc: the repository database connection
         :param entity_id: the entity id
 
         :returns: a list of source_id and source_id_types
         """
         query = FIND_ENTITY_SOURCE_IDS_TEMPLATE.substitute(entity_id = entity_id)
 
-        logging.debug(query)
-        queryresults = yield cdb.query(query)
-        logging.debug(queryresults)
+        queryresults = yield dbc.query(query)
+        results = [{'source_id_type': x['idtype'], 'source_id': x['id']} for x in self._parse_response(queryresults)]
+        raise Return(results)
 
-        results = [{'source_id_type': x['idtype'], 'source_id': x['id']} for x in cls._parse_response(queryresults)]
-
-        raise gen.Return(results)
-
+    @classmethod
     @coroutine
-    def _countMatchesNotIncluding(self, idAndType, entity_id):
+    def _countMatchesNotIncluding(self, dbc, idAndType, entity_id):
         """
         Count the number of entities using these ids/types (other than this entity)
 
+        :param dbc: the repository database connection
         :param: idAndType: the source_id and source_id_type to search for
         :param entity_id: the entity id of the entity to exclude
 
         :returns: a count of entities
         """
-        logging.debug('idandtype ' + str(idAndType))
         query = FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
                                                                     source_id = idAndType['source_id'],
                                                                     entity_id = entity_id)
 
-        logging.debug(query)
-        queryresults = yield cdb.query(query)
+        queryresults = yield dbc.query(query)
         logging.debug(queryresults)
 
-        raise gen.Return(cls._parse_response(queryresults))
+        raise Return(self._parse_response(queryresults)[0]['count'])
 
+    @classmethod
     @coroutine
-    def _deleteIds(self, idAndType):
+    def _deleteIds(self, dbc, idAndType):
         """
         Delete id/type triples
 
+        :param dbc: the repository database connection
         :param: idAndType: the source_id and source_id_type to delete
 
         :returns: nothing
@@ -371,18 +371,18 @@ class Asset(Entity):
         query = DELETE_ID_TRIPLES_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
                                                                     source_id = idAndType['source_id'])
 
-        logging.debug(query)
-        queryresults = yield cdb.query(query)
+        queryresults = yield dbc.query(query)
         logging.debug(queryresults)
 
-        raise gen.Return()    
+        raise Return()    
 
-    
+    @classmethod
     @coroutine
-    def _deleteAsset(self, entity_id):
+    def _deleteAsset(self, dbc, entity_id):
         """
         Delete entity triples
 
+        :param dbc: the repository database connection
         :param: entity_id: the id of the entity to delete
 
         :returns: nothing
@@ -390,18 +390,19 @@ class Asset(Entity):
         logging.debug('delete entity_id ' + str(entity_id))
         query = DELETE_ENTITY_TRIPLE_TEMPLATE.substitute(entity_id = entity_id)
 
-        logging.debug(query)
-        queryresults = yield cdb.query(query)
+        queryresults = yield dbc.query(query)
         logging.debug(queryresults)
 
-        raise gen.Return()    
+        raise Return()    
 
+    @classmethod
     @coroutine
-    def delete(self, ids):
+    def _delete(self, dbc, ids):
         """
         Delete the triples relating to an entity (if they're not used
         by another entity)
 
+        :param dbc: the repository database connection
         :param ids: a list of dictionaries containing "id" & "id_type"
         """
         
@@ -432,27 +433,28 @@ class Asset(Entity):
             raise exceptions.HTTPError(400, errors)
 
         # get all the entities that match the the ids in this repo
-        entities = yield self._getMatchingEntities(validated_ids)
+        entities = yield self._getMatchingEntities(dbc, validated_ids)
 
         logging.debug('entities ' + str(entities))
 
         # for each entity find all the ids associated with it
         for entity in entities:
-            idsAndTypes = yield self._getEntityIdsAndTypes(entity)
+            idsAndTypes = yield self._getEntityIdsAndTypes(dbc, entity)
 
             # loop through each set of ids for this entity
             for idAndType in idsAndTypes:
                 # if these ids are NOT used for anything else then delete them
-                result = yield self._countMatchesNotIncluding(idAndType, entity)
-                count = int(result[0].get('count', '0'))
+                result = yield self._countMatchesNotIncluding(dbc, idAndType, entity)
+                count = int(result)
 
+                logging.debug('count '+ str(count))
                 if count == 0:
-                    yield self._deleteIds(idAndType)
+                    yield self._deleteIds(dbc, idAndType)
             
             # delete the entity itself
-            yield self._deleteAsset(entity)
+            yield self._deleteAsset(dbc, entity)
             
-        raise gen.Return()
+        raise Return()
 
 @coroutine
 def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000):
