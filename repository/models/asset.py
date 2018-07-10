@@ -177,17 +177,60 @@ def send_notification(repository, **kwargs):
                                 scope=Write(options.url_index),
                                 ssl_options=ssl_server_options())
         client = API(options.url_index,
-                     token=token,
-                     ssl_options=ssl_server_options())
+                        token=token,
+                        ssl_options=ssl_server_options())
         client.index.notifications.prepare_request(
             request_timeout=options.request_timeout,
             headers=headers,
             body=json.dumps({'id': repository.repository_id}))
 
-        logging.debug('calling send_notification ' + str(repository))
+        logging.debug('calling send_notification ' + str(repository.repository_id))
         yield client.index.notifications.post()
     except Exception as e:
         logging.exception("failed to notify index: " + e.message)
+
+@coroutine
+def delete_from_index(repository, ids, **kwargs):
+    """
+    Send a fire-and-forget delete to the index service 
+
+    NOTE: all exceptions are unhandled. It's assumed that the function is used
+    as a callback outside of the request's context using IOLoop.spawn_callback
+    (see: http://www.tornadoweb.org/en/stable/ioloop.html)
+    """
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    try:
+
+        # do remote call to index service eg
+        # DELETE http://0.0.0.0:8002/v1/index/entity-types/asset/id-types/isbn,doi/ids/schaduwkutkinderen,10293812354/repositories/0d03c70712a8483ebf6d4a7c17228f9e
+        # need to get an auth token first
+            
+        # extract the id list and id_type list from the incoming ids parameter    
+        source_id_types = ','.join([str(x['source_id_type']) for x in ids])
+        source_ids = ','.join([str(x['source_id']) for x in ids])
+
+        logging.debug ('delete_from_index : source_id_types ' + source_id_types)
+        logging.debug ('delete_from_index : source_ids ' + source_ids)
+
+        token = yield get_token(options.url_auth,
+                                options.service_id,
+                                options.client_secret,
+                                scope=Write(options.url_index),
+                                ssl_options=ssl_server_options())
+        client = API(options.url_index,
+                     token=token,
+                     ssl_options=ssl_server_options())
+
+        logging.debug('delete_from_index : repo ' + str(repository.repository_id))
+
+        yield client.index['entity-types']['asset']['id-types'][source_id_types].ids[source_ids].repositories[repository.repository_id].delete()          
+
+    except Exception as e:
+        logging.exception("failed to delete from index: " + e.message)
 
 
 ## ASSET MODEL
@@ -271,10 +314,8 @@ class Asset(Entity):
         entity_ids = [x[u'entity_id'] for x in assetids]
         yield Entity.insert_timestamps(ids=entity_ids, repository=repository)
 
-        # Send notification to index service if not in standalone mode
-        ###### This fails - Investigate why
-        if not options.standalone:
-            IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
+        # Send notification to index service
+        IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
 
         raise Return(assetids)
 
@@ -286,12 +327,11 @@ class Asset(Entity):
 
         for entity_id in entity_ids:
             ids = get_asset_source_ids(payload, content_type, entity_id)
-            logging.debug('beforestore got ' + str(ids))
-            # delete existing tripes here from index then repo
 
-            # do remote call to index service eg
-            # DELETE http://0.0.0.0:8002/v1/index/entity-types/asset/id-types/isbn,doi/ids/schaduwkutkinderen,10293812354/repositories/0d03c70712a8483ebf6d4a7c17228f9e
-            # need to get an auth token first
+            logging.debug('beforestore got ' + str(ids))
+
+            # delete existing tripes from index
+            IOLoop.current().spawn_callback(partial(eval('delete_from_index'), repository, ids))
 
             # delete from repository
             yield cls._delete(repository, ids)
