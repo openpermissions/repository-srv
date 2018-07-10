@@ -166,8 +166,7 @@ WHERE {?s ?p ?o.
 """)
 
 DELETE_ID_TRIPLES_TEMPLATE = string.Template("""
-#DELETE
-CONSTRUCT
+DELETE
 WHERE {?s 
            <http://openpermissions.org/ns/op/1.1/value> "$source_id";
 			<http://openpermissions.org/ns/op/1.1/id_type> <$source_id_type>;
@@ -175,8 +174,7 @@ WHERE {?s
 """)
 
 DELETE_ENTITY_TRIPLE_TEMPLATE = string.Template("""
-#DELETE
-CONSTRUCT
+DELETE
 WHERE {
 <$entity_id> ?p ?o}
 """)
