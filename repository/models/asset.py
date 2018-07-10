@@ -406,7 +406,7 @@ class Asset(Entity):
         query = DELETE_ID_TRIPLES_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
                                                                     source_id = idAndType['source_id'])
 
-        queryresults = yield dbc.query(query)
+        queryresults = yield dbc.update(query)
         logging.debug(queryresults)
 
         raise Return()    
@@ -425,7 +425,7 @@ class Asset(Entity):
         logging.debug('delete entity_id ' + str(entity_id))
         query = DELETE_ENTITY_TRIPLE_TEMPLATE.substitute(entity_id = entity_id)
 
-        queryresults = yield dbc.query(query)
+        queryresults = yield dbc.update(query)
         logging.debug(queryresults)
 
         raise Return()    
