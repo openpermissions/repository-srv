@@ -204,11 +204,6 @@ def delete_from_index(repository, ids, **kwargs):
     }
 
     try:
-
-        # do remote call to index service eg
-        # DELETE http://0.0.0.0:8002/v1/index/entity-types/asset/id-types/isbn,doi/ids/schaduwkutkinderen,10293812354/repositories/0d03c70712a8483ebf6d4a7c17228f9e
-        # need to get an auth token first
-            
         # extract the id list and id_type list from the incoming ids parameter    
         source_id_types = ','.join([str(x['source_id_type']) for x in ids])
         source_ids = ','.join([str(x['source_id']) for x in ids])
