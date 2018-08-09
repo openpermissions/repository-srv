@@ -55,7 +55,7 @@ Once the request has been authorised, you will get an email telling you it has b
 "Location" is the URL where you intend the repo to be available, e.g. “https://myrepo.mydomain.org”.
 "Service Type" is “Repository”.
 
-Make a note of the client Secret.
+Make a note of the client ID and Client Secret for later.
 
 As above, this request has to be approved. You will get an email saying your request has been sent in. And you will get an email when it has been approved.
 
