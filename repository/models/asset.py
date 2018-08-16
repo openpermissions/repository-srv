@@ -470,26 +470,47 @@ class Asset(Entity):
         # get all the entities that match the the ids in this repo
         entities = yield self._getMatchingEntities(dbc, validated_ids)
 
-        logging.debug('entities ' + str(entities))
+        logging.debug('searching for ids ' + str(validated_ids))
+        logging.debug('found entities ' + str(entities))
 
         # for each entity find all the ids associated with it
         for entity in entities:
             idsAndTypes = yield self._getEntityIdsAndTypes(dbc, entity)
 
-            # loop through each set of ids for this entity
-            for idAndType in idsAndTypes:
-                # if these ids are NOT used for anything else then delete them
-                result = yield self._countMatchesNotIncluding(dbc, idAndType, entity)
-                count = int(result)
+            logging.debug('for entity ' + str(entity) + ' got these ids ' + str(idsAndTypes))
 
-                logging.debug('count '+ str(count))
-                if count == 0:
-                    yield self._deleteIds(dbc, idAndType)
-            
-            # delete the entity itself
-            yield self._deleteAsset(dbc, entity)
+            assetMatch = yield self._checkIdsAndTypesIdentical(validated_ids, idsAndTypes)
+
+            logging.debug('identical? : ' + str(assetMatch))
+
+            # if this asset is an exact match for the ids we're looking for
+            if assetMatch:
+                # loop through each set of ids for this entity
+                for idAndType in idsAndTypes:
+                    # if these ids are NOT used for anything else then delete them
+
+                    logging.debug('counting ' + str(idAndType))
+
+                    result = yield self._countMatchesNotIncluding(dbc, idAndType, entity)
+                    count = int(result)
+
+                    logging.debug('count '+ str(count))
+                    if count == 0:
+                        yield self._deleteIds(dbc, idAndType)
+                
+                # delete the entity itself
+                yield self._deleteAsset(dbc, entity)
             
         raise Return()
+
+    @classmethod
+    @coroutine
+    def _checkIdsAndTypesIdentical(self, searchIds, assetRdfIds):
+        if not [s for s in searchIds if (s['source_id_type'], s['source_id']) not in {(a['source_id_type'].toPython().replace('http://openpermissions.org/ns/hub/', ''), a['source_id'].value) for a in assetRdfIds}] \
+            and not [a for a in assetRdfIds if (a['source_id_type'].toPython().replace('http://openpermissions.org/ns/hub/', ''), a['source_id'].value) not in {(s['source_id_type'], s['source_id']) for s in searchIds}]:
+            raise Return(True)
+        else:
+            raise Return(False)
 
 @coroutine
 def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000):
