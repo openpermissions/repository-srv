@@ -131,7 +131,6 @@ SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
 ASSET_STRUCT_SELECT = """ SELECT DISTINCT ?s {{ {id} (op:alsoIdentifiedBy)? ?s . }} """
 
 FIND_ENTITY_TEMPLATE = string.Template("""
-PREFIX hub: <http://openpermissions.org/ns/hub/>
 SELECT DISTINCT ?s
 WHERE {?s ?p ?o.
 	?o  	<http://openpermissions.org/ns/op/1.1/value>  ?id;
@@ -144,7 +143,7 @@ WHERE {?s ?p ?o.
 """)
 
 SOURCE_ID_FILTER_TEMPLATE = string.Template("""
-("$id" hub:$id_type)
+("$id" <http://openpermissions.org/ns/hub/$id_type>)
 """)
 
 FIND_ENTITY_SOURCE_IDS_TEMPLATE = string.Template("""

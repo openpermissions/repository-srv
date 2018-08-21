@@ -205,8 +205,8 @@ def delete_from_index(repository, ids, **kwargs):
 
     try:
         # extract the id list and id_type list from the incoming ids parameter    
-        source_id_types = ','.join([str(x['source_id_type']) for x in ids])
-        source_ids = ','.join([str(x['source_id']) for x in ids])
+        source_id_types = ','.join([urllib.unquote(str(x['source_id_type'])) for x in ids])
+        source_ids = ','.join([urllib.unquote(str(x['source_id'])) for x in ids])
 
         logging.debug ('delete_from_index : source_id_types ' + source_id_types)
         logging.debug ('delete_from_index : source_ids ' + source_ids)
@@ -348,6 +348,8 @@ class Asset(Entity):
 
         query = FIND_ENTITY_TEMPLATE.substitute(id_filter = ''.join(subqueries))
 
+        logging.debug('search : ' + query)
+        
         queryresults = yield dbc.query(query)
 
         results = [x['s'] for x in self._parse_response(queryresults)]
@@ -460,17 +462,17 @@ class Asset(Entity):
                 # NOTE: internal representation of the index will use
                 # id_type and id to construct URI and assusmes that id_type
                 # and and have been url_quoted
-                x['source_id'] = urllib.quote_plus(x['source_id'])
-                x['source_id_type'] = urllib.quote_plus(x['source_id_type'])
+                x['source_id'] = x['source_id']
+                x['source_id_type'] = x['source_id_type']
                 validated_ids.append(x)
 
         if errors:
             raise exceptions.HTTPError(400, errors)
 
         # get all the entities that match the the ids in this repo
+        logging.debug('searching for ids ' + str(validated_ids))
         entities = yield self._getMatchingEntities(dbc, validated_ids)
 
-        logging.debug('searching for ids ' + str(validated_ids))
         logging.debug('found entities ' + str(entities))
 
         # for each entity find all the ids associated with it
