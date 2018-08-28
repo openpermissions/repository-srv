@@ -70,6 +70,34 @@ def log_added_assets(assets, token=None, repository_id=None):
 
     logger.info(msg)
 
+def log_deleted_assets(assets, token=None, repository_id=None):
+    """
+    Log assets deleted from the repository
+
+    :param assets: the data stored in the repository
+    :param token: JWT access token used to make request
+    :param repository_id: the repository ID
+    """
+    if token:
+        service = token['sub']
+        original_service = token['client']['id']
+
+        if original_service and original_service != service:
+            on_behalf_of = '(on behalf of Service {}) '.format(original_service)
+        else:
+            on_behalf_of = ''
+
+        msg = 'Service {service} {on_behalf_of} deleted {count} assets'.format(
+            service=service,
+            count=len(assets),
+            on_behalf_of=on_behalf_of)
+    else:
+        msg = '{count} assets deleted'
+
+    if repository_id:
+        msg += ' from repository {repository_id}'.format(repository_id=repository_id)
+
+    logger.info(msg)
 
 def log_asset_ids(entity_id, ids, token=None):
     def _to_unicode(i):

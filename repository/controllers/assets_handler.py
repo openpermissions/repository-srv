@@ -177,6 +177,27 @@ class AssetsHandler(RepoBaseHandler):
 
         self.finish({'status': 200})
 
+    @gen.coroutine
+    def delete(self, repository_id):
+        """
+        Respond with JSON containing success or error message.
+
+        :param repository_id: str
+        """
+        _validate_body(self.request)
+        helper.validate(self.request.body, format=self.data_format())
+
+        assets_data = yield asset.delete(
+            DatabaseConnection(repository_id),
+            self.request.body,
+            self.get_content_type())
+
+        audit.log_deleted_assets(
+            assets_data,
+            self.token,
+            repository_id=repository_id)
+
+        self.finish({'status': 200})
 
 class AssetHandler(RepoBaseHandler):
     """Handler for individual assets"""
