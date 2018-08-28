@@ -64,7 +64,7 @@ class IdentifiersHandler(RepoBaseHandler):
                 from_time = arrow.get(from_time)
 
             if to_time is None:
-                to_time = now
+                to_time = now.replace(days=+1)
             else:
                 to_time = arrow.get(to_time)
         except ParserError:
