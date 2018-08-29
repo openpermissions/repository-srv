@@ -553,3 +553,4 @@ def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000
 exists = Asset.exists
 insert_timestamps = Asset.insert_timestamps
 store = Asset.store
+delete = Asset.delete

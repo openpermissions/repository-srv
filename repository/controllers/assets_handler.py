@@ -187,13 +187,13 @@ class AssetsHandler(RepoBaseHandler):
         _validate_body(self.request)
         helper.validate(self.request.body, format=self.data_format())
 
-        assets_data = yield asset.delete(
+        yield asset.delete(
             DatabaseConnection(repository_id),
             self.request.body,
             self.get_content_type())
 
         audit.log_deleted_assets(
-            assets_data,
+            self.request.body,
             self.token,
             repository_id=repository_id)
 

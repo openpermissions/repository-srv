@@ -87,9 +87,9 @@ def log_deleted_assets(assets, token=None, repository_id=None):
         else:
             on_behalf_of = ''
 
-        msg = 'Service {service} {on_behalf_of} deleted {count} assets'.format(
+        msg = 'Service {service} {on_behalf_of} deleted {assets}'.format(
             service=service,
-            count=len(assets),
+            assets=assets,
             on_behalf_of=on_behalf_of)
     else:
         msg = '{count} assets deleted'
