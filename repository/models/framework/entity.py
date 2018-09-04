@@ -128,6 +128,29 @@ class Entity(object):
 
     @classmethod
     @coroutine
+    def delete(cls, repository, payload, content_type='application/xml'):
+        """
+        Delete an asset in the database.
+
+        :param payload: tornado.httputil.HTTPServerRequest instance
+        :param repository: the linked-data database where to store the asset
+        :param content_type: mimetype of the data uploaded
+        :returns: list of encountered errors
+        """
+
+        if content_type == 'application/xml':
+            helper.validate(payload, 'xml')
+        elif content_type == 'application/ld+json':
+            g = helper.validate(payload, 'json-ld')
+            payload = g.serialize()
+            content_type = 'application/xml'
+
+        yield cls.call_event_handler("before_store", payload=payload, content_type=content_type, repository=repository)
+
+        raise Return()
+
+    @classmethod
+    @coroutine
     def exists(cls, repository, entity_id, filters=None, extra_constraints=None):
         if extra_constraints is None:
             extra_constraints = []

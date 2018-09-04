@@ -164,7 +164,8 @@ def request(body_type, namespace, payload,  response_type=None, content_type=Non
     else:
         body = payload
 
-    logging.debug(payload)
+    logging.debug('request. body_type:' + str(body_type))
+    logging.debug('request. payload:' + str(payload))
     try:
         rsp = yield AsyncHTTPClient().fetch(db_url, method="POST", body=body, headers=headers)
     except HTTPError as exc:

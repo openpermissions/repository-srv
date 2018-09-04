@@ -7,6 +7,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and limitations under the License.
 
+import string
 
 ASSET_CLASS = "op:Asset"
 
@@ -81,8 +82,8 @@ GROUP BY ?{idname}_id_bundle
 # Gets ids for all assets in graph
 # NOTE: Not used in blazegraph. Used when onboarding assets to identify the assets coming from the user.
 # :returns entity_id: Id of Asset
+#PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 ASSET_QUERY_ALL_ENTITY_IDS = """
-PREFIX op: <http://openpermissions.org/ns/op/1.0/>
 
 SELECT DISTINCT ?entity_id WHERE
 {
@@ -128,3 +129,51 @@ SELECT ?{idname}_entity  ?{idname}_id_value ?{idname}_id_type {{
 # Returns the subjects of the triples that are involved in an asset identified by asset_id
 # used by GENERIC_GET.
 ASSET_STRUCT_SELECT = """ SELECT DISTINCT ?s {{ {id} (op:alsoIdentifiedBy)? ?s . }} """
+
+FIND_ENTITY_TEMPLATE = string.Template("""
+SELECT DISTINCT ?s
+WHERE {?s ?p ?o.
+	?o  	<http://openpermissions.org/ns/op/1.1/value>  ?id;
+<http://openpermissions.org/ns/op/1.1/id_type>  ?idtype
+		.
+		VALUES (?id ?idtype) {
+		$id_filter
+		}
+	}
+""")
+
+SOURCE_ID_FILTER_TEMPLATE = string.Template("""
+("$id" <http://openpermissions.org/ns/hub/$id_type>)
+""")
+
+FIND_ENTITY_SOURCE_IDS_TEMPLATE = string.Template("""
+SELECT DISTINCT ?id ?idtype
+WHERE {<$entity_id> ?p ?o.
+?o  	<http://openpermissions.org/ns/op/1.1/value>  ?id;
+<http://openpermissions.org/ns/op/1.1/id_type> ?idtype.}
+""")
+
+FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE = string.Template("""
+SELECT (COUNT(?s) AS ?count)
+WHERE {?s ?p ?o.
+		?o 
+           <http://openpermissions.org/ns/op/1.1/value> "$source_id";
+			<http://openpermissions.org/ns/op/1.1/id_type> <$source_id_type>
+			.    
+      FILTER NOT EXISTS {<$entity_id> ?p ?o}
+                 }
+""")
+
+DELETE_ID_TRIPLES_TEMPLATE = string.Template("""
+DELETE
+WHERE {?s 
+           <http://openpermissions.org/ns/op/1.1/value> "$source_id";
+			<http://openpermissions.org/ns/op/1.1/id_type> <$source_id_type>;
+      ?p ?o.}
+""")
+
+DELETE_ENTITY_TRIPLE_TEMPLATE = string.Template("""
+DELETE
+WHERE {
+<$entity_id> ?p ?o}
+""")

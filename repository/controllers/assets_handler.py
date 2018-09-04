@@ -64,7 +64,7 @@ class IdentifiersHandler(RepoBaseHandler):
                 from_time = arrow.get(from_time)
 
             if to_time is None:
-                to_time = now
+                to_time = now.replace(days=+1)
             else:
                 to_time = arrow.get(to_time)
         except ParserError:
@@ -177,6 +177,27 @@ class AssetsHandler(RepoBaseHandler):
 
         self.finish({'status': 200})
 
+    @gen.coroutine
+    def delete(self, repository_id):
+        """
+        Respond with JSON containing success or error message.
+
+        :param repository_id: str
+        """
+        _validate_body(self.request)
+        helper.validate(self.request.body, format=self.data_format())
+
+        yield asset.delete(
+            DatabaseConnection(repository_id),
+            self.request.body,
+            self.get_content_type())
+
+        audit.log_deleted_assets(
+            self.request.body,
+            self.token,
+            repository_id=repository_id)
+
+        self.finish({'status': 200})
 
 class AssetHandler(RepoBaseHandler):
     """Handler for individual assets"""

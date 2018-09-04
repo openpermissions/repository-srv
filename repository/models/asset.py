@@ -32,7 +32,13 @@ from .queries.asset import (ASSET_CLASS,
                             ASSET_GET_ALSO_IDENTIFIED,
                             ASSET_SELECT_BY_SOURCE_ID,
                             ASSET_SELECT_BY_ENTITY_ID,
-                            ASSET_STRUCT_SELECT
+                            ASSET_STRUCT_SELECT,
+                            FIND_ENTITY_TEMPLATE,
+                            SOURCE_ID_FILTER_TEMPLATE,
+                            FIND_ENTITY_SOURCE_IDS_TEMPLATE,
+                            FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE,
+                            DELETE_ID_TRIPLES_TEMPLATE,
+                            DELETE_ENTITY_TRIPLE_TEMPLATE
                             )
 from .queries.generic import *
 from .framework.entity import Entity, build_sparql_str, build_uuid_reference, build_hub_reference, ENTITY_ID_REGEX
@@ -43,6 +49,7 @@ TYPE_MAPPING = {
     'application/xml': 'xml'
 }
 
+HUB_KEY = "hub_key"
 
 @coroutine
 def _insert_ids(repository, entity_id, ids):
@@ -85,8 +92,37 @@ def _validate_ids(ids):
     return errors
 
 
+def get_asset_source_ids(assets_data, content_type, entity_id):
+    """
+    This function extracts source_id and source_id_type of each asset in the data.
+    It does this by creating an in memory graph via RDF Lib.
+
+    * Caution this is potentially very cpu expensive and could use a lot of memory
+
+    :param assets_data: A blob of triples
+    :param content_type:  The type of the blob
+    :return: an array of dicts that show the ids of assets
+    """
+    graph = rdflib.graph.Graph()
+    graph.parse(data=assets_data, format=TYPE_MAPPING[content_type])
+    result = graph.query(
+            SPARQL_PREFIXES + (
+              ASSET_GET_ALSO_IDENTIFIED.format(
+                entity_id=Asset.normalise_id(entity_id)
+              )
+            ))
+    result = [{'source_id_type': x[0].split('/')[-1], 'source_id': str(x[1])} for x in result]
+    return result
+
 def get_asset_ids(assets_data, content_type):
     """
+    *********************************************************************************
+    **** NOTE - 28 June 2018                                                    *****
+    **** This function does NOT do what the original comment below says         *****
+    **** This function does NOT extract source_id etc from an in memory graph   *****
+    **** Thus function DOES retrieve asset ids from an in memory graph          *****
+    *********************************************************************************
+
     This function extracts source_id, source_id_type and entity_uri of each asset in the data.
     It does this by creating an in memory graph via RDF Lib.
 
@@ -141,16 +177,55 @@ def send_notification(repository, **kwargs):
                                 scope=Write(options.url_index),
                                 ssl_options=ssl_server_options())
         client = API(options.url_index,
-                     token=token,
-                     ssl_options=ssl_server_options())
+                        token=token,
+                        ssl_options=ssl_server_options())
         client.index.notifications.prepare_request(
             request_timeout=options.request_timeout,
             headers=headers,
             body=json.dumps({'id': repository.repository_id}))
 
+        logging.debug('calling send_notification ' + str(repository.repository_id))
         yield client.index.notifications.post()
     except Exception as e:
         logging.exception("failed to notify index: " + e.message)
+
+@coroutine
+def delete_from_index(repository, ids, **kwargs):
+    """
+    Send a fire-and-forget delete to the index service 
+
+    NOTE: all exceptions are unhandled. It's assumed that the function is used
+    as a callback outside of the request's context using IOLoop.spawn_callback
+    (see: http://www.tornadoweb.org/en/stable/ioloop.html)
+    """
+    headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    try:
+        # extract the id list and id_type list from the incoming ids parameter    
+        source_id_types = ','.join([urllib.unquote(str(x['source_id_type'])) for x in ids])
+        source_ids = ','.join([urllib.unquote(str(x['source_id'])) for x in ids])
+
+        logging.debug ('delete_from_index : source_id_types ' + source_id_types)
+        logging.debug ('delete_from_index : source_ids ' + source_ids)
+
+        token = yield get_token(options.url_auth,
+                                options.service_id,
+                                options.client_secret,
+                                scope=Write(options.url_index),
+                                ssl_options=ssl_server_options())
+        client = API(options.url_index,
+                     token=token,
+                     ssl_options=ssl_server_options())
+
+        logging.debug('delete_from_index : repo ' + str(repository.repository_id))
+
+        yield client.index['entity-types']['asset']['id-types'][source_id_types].ids[source_ids].repositories[repository.repository_id].delete()          
+
+    except Exception as e:
+        logging.exception("failed to delete from index: " + e.message)
 
 
 ## ASSET MODEL
@@ -234,12 +309,210 @@ class Asset(Entity):
         entity_ids = [x[u'entity_id'] for x in assetids]
         yield Entity.insert_timestamps(ids=entity_ids, repository=repository)
 
-        # Send notification to index service if not in standalone mode
-        if not options.standalone:
-            IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
+        # Send notification to index service
+        IOLoop.current().spawn_callback(partial(eval('send_notification'), repository))
 
         raise Return(assetids)
 
+    @classmethod
+    @coroutine
+    def before_store(cls, payload, content_type, repository):
+        assetids = get_asset_ids(payload, content_type)
+        entity_ids = [x[u'entity_id'] for x in assetids]
+
+        for entity_id in entity_ids:
+            ids = get_asset_source_ids(payload, content_type, entity_id)
+
+            logging.debug('beforestore got ' + str(ids))
+
+            # delete existing tripes from index
+            IOLoop.current().spawn_callback(partial(eval('delete_from_index'), repository, ids))
+
+            # delete from repository
+            yield cls._delete(repository, ids)
+        raise Return()
+
+    @classmethod
+    @coroutine
+    def _getMatchingEntities(self, dbc, ids):
+        """
+        Get list of entities matching the given incoming ids 
+
+        :param dbc: the repository database connection
+        :param ids: a list of dictionaries containing "source_id" & "source_id_type".
+
+        :returns: a list of entity ids
+        """
+        subqueries = [SOURCE_ID_FILTER_TEMPLATE.substitute(id = x['source_id'], id_type = x['source_id_type'])
+                      for x in ids]
+
+        query = FIND_ENTITY_TEMPLATE.substitute(id_filter = ''.join(subqueries))
+
+        logging.debug('search : ' + query)
+        
+        queryresults = yield dbc.query(query)
+
+        results = [x['s'] for x in self._parse_response(queryresults)]
+        raise Return(results)
+
+    @classmethod
+    @coroutine
+    def _getEntityIdsAndTypes(self, dbc, entity_id):
+        """
+        Get list of source_ids and source_id_types for a given entity id
+
+        :param dbc: the repository database connection
+        :param entity_id: the entity id
+
+        :returns: a list of source_id and source_id_types
+        """
+        query = FIND_ENTITY_SOURCE_IDS_TEMPLATE.substitute(entity_id = entity_id)
+
+        queryresults = yield dbc.query(query)
+        results = [{'source_id_type': x['idtype'], 'source_id': x['id']} for x in self._parse_response(queryresults)]
+        raise Return(results)
+
+    @classmethod
+    @coroutine
+    def _countMatchesNotIncluding(self, dbc, idAndType, entity_id):
+        """
+        Count the number of entities using these ids/types (other than this entity)
+
+        :param dbc: the repository database connection
+        :param: idAndType: the source_id and source_id_type to search for
+        :param entity_id: the entity id of the entity to exclude
+
+        :returns: a count of entities
+        """
+        query = FIND_ENTITY_COUNT_BY_SOURCE_IDS_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
+                                                                    source_id = idAndType['source_id'],
+                                                                    entity_id = entity_id)
+
+        queryresults = yield dbc.query(query)
+        logging.debug(queryresults)
+
+        raise Return(self._parse_response(queryresults)[0]['count'])
+
+    @classmethod
+    @coroutine
+    def _deleteIds(self, dbc, idAndType):
+        """
+        Delete id/type triples
+
+        :param dbc: the repository database connection
+        :param: idAndType: the source_id and source_id_type to delete
+
+        :returns: nothing
+        """
+        logging.debug('delete idandtype ' + str(idAndType))
+        query = DELETE_ID_TRIPLES_TEMPLATE.substitute(source_id_type = idAndType['source_id_type'],
+                                                                    source_id = idAndType['source_id'])
+
+        queryresults = yield dbc.update(query)
+        logging.debug(queryresults)
+
+        raise Return()    
+
+    @classmethod
+    @coroutine
+    def _deleteAsset(self, dbc, entity_id):
+        """
+        Delete entity triples
+
+        :param dbc: the repository database connection
+        :param: entity_id: the id of the entity to delete
+
+        :returns: nothing
+        """
+        logging.debug('delete entity_id ' + str(entity_id))
+        query = DELETE_ENTITY_TRIPLE_TEMPLATE.substitute(entity_id = entity_id)
+
+        queryresults = yield dbc.update(query)
+        logging.debug(queryresults)
+
+        raise Return()    
+
+    @classmethod
+    @coroutine
+    def _delete(self, dbc, ids):
+        """
+        Delete the triples relating to an entity (if they're not used
+        by another entity)
+
+        :param dbc: the repository database connection
+        :param ids: a list of dictionaries containing "id" & "id_type"
+        """
+        
+        validated_ids, errors = [], []
+
+        for x in ids:                        # source_id / source_id_type
+            if 'id' in x:
+                x['source_id'] = x['id']
+                x['source_id_type'] = x['id_type']
+            if 'source_id_type' not in x or 'source_id' not in x:
+                errors.append(x)
+            elif x['source_id_type'] == HUB_KEY:
+                try:
+                    parsed = hubkey.parse_hub_key(x['source_id'])
+                    x['source_id'] = parsed['entity_id']
+                    validated_ids.append(x)
+                except ValueError:
+                    errors.append(x)
+            else:
+                # NOTE: internal representation of the index will use
+                # id_type and id to construct URI and assusmes that id_type
+                # and and have been url_quoted
+                x['source_id'] = x['source_id']
+                x['source_id_type'] = x['source_id_type']
+                validated_ids.append(x)
+
+        if errors:
+            raise exceptions.HTTPError(400, errors)
+
+        # get all the entities that match the the ids in this repo
+        logging.debug('searching for ids ' + str(validated_ids))
+        entities = yield self._getMatchingEntities(dbc, validated_ids)
+
+        logging.debug('found entities ' + str(entities))
+
+        # for each entity find all the ids associated with it
+        for entity in entities:
+            idsAndTypes = yield self._getEntityIdsAndTypes(dbc, entity)
+
+            logging.debug('for entity ' + str(entity) + ' got these ids ' + str(idsAndTypes))
+
+            assetMatch = yield self._checkIdsAndTypesIdentical(validated_ids, idsAndTypes)
+
+            logging.debug('identical? : ' + str(assetMatch))
+
+            # if this asset is an exact match for the ids we're looking for
+            if assetMatch:
+                # loop through each set of ids for this entity
+                for idAndType in idsAndTypes:
+                    # if these ids are NOT used for anything else then delete them
+
+                    logging.debug('counting ' + str(idAndType))
+
+                    result = yield self._countMatchesNotIncluding(dbc, idAndType, entity)
+                    count = int(result)
+
+                    logging.debug('count '+ str(count))
+                    if count == 0:
+                        yield self._deleteIds(dbc, idAndType)
+                
+                # delete the entity itself
+                yield self._deleteAsset(dbc, entity)
+            
+        raise Return()
+
+    @classmethod
+    @coroutine
+    def _checkIdsAndTypesIdentical(self, searchIds, assetRdfIds):
+        if not [s for s in searchIds if (s['source_id_type'], s['source_id']) not in {(a['source_id_type'].toPython().replace('http://openpermissions.org/ns/hub/', ''), a['source_id'].value) for a in assetRdfIds}] \
+            and not [a for a in assetRdfIds if (a['source_id_type'].toPython().replace('http://openpermissions.org/ns/hub/', ''), a['source_id'].value) not in {(s['source_id_type'], s['source_id']) for s in searchIds}]:
+            raise Return(True)
+        else:
+            raise Return(False)
 
 @coroutine
 def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000):
@@ -280,3 +553,4 @@ def retrieve_paged_assets(repository, from_time, to_time, page=1, page_size=1000
 exists = Asset.exists
 insert_timestamps = Asset.insert_timestamps
 store = Asset.store
+delete = Asset.delete

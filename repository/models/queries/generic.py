@@ -57,7 +57,7 @@ ASK  WHERE {{
 # :param entity_id: Id of entity
 GENERIC_INSERT_TIMESTAMPS = """
 INSERT {{
-  {entity_id} dcterm:modified ?now .
+  id:{entity_id} dcterm:modified ?now .
 }}
 WHERE {{
     BIND ( NOW() as ?now ) .
