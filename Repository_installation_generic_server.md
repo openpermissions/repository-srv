@@ -198,6 +198,8 @@ env = "prod"
 standalone=True
 
 url_auth = "https://auth.copyrighthub.org"
+url_accounts = "https://acc.copyrighthub.org"
+url_index = "https://index.copyrighthub.org"
 
 repo_db_path="/blazegraph/namespace/"
 
