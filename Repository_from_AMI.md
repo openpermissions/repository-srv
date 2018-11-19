@@ -234,3 +234,54 @@ exit
 sudo supervisorctl restart repository
 ```
 This will pull the latest version from Github and restart the service to incoporate the new code.
+
+# Creating automatic backups to an S3 bucket
+1) Create an s3 bucket for you backups, eg `bigdata-backups`
+2) Create an IAM policy to grant access to that bucket, with name `bigdata_backups_S3_Bucket_ReadWrite`, with the following policy
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bigdata-backups"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::bigdata-backups/*"
+            ]
+        }
+    ]
+}
+```
+3) Create an EC2 instance role called `ec2_blazegraph` with the above policy attached 
+4) Assign the new role `ec2_blazegraph` to your repository instance in the EC2 Management Console by selecting your instance and going to Action -> Instance Settings -> Attach/Replace IAM role
+5) on the instance find the `/home/opp-backup/bin/jnl_backup.sh` file and edit it as below (replace the bucket name as appropriate from step 1)
+```
+#!/bin/bash
+
+TIME_NOW=$(date +%s)
+
+service monit stop
+service bigdataNSS stop
+
+aws s3 cp --region eu-west-1 --recursive /var/lib/bigdata/var/data/ s3://bigdata-backups/$TIME_NOW/
+
+service bigdataNSS start
+service monit start
+```
+6) use crontab to add the following cron schedule with `crontab -e`
+```
+# Blazegraph (bigdata) backup to Amazon S3 Bucket
+0 23 * * * sudo /home/opp-backup/bin/jnl_backup.sh >/dev/null 2>&1
+```
